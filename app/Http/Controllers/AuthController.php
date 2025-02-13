@@ -9,26 +9,21 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        // Validation des entrées
         $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|min:6', // Ajouter une règle de mot de passe minimale
+            'email'    => 'required|email',
+            'password' => 'required|min:6',
         ]);
 
-        $credentials = $request->only('email', 'password');
-
-        if (Auth::attempt($credentials)) {
-            // Redirige vers la page d'accueil ou la page destinée à l'utilisateur après la connexion
+        if (Auth::attempt($request->only('email', 'password'))) {
             return redirect()->intended('/');
         }
 
-        // Message d'erreur si les identifiants sont incorrects
-        return back()->withErrors(['email' => 'Identifiants incorrects'])->withInput($request->except('password'));
+        return back()->withErrors(['email' => __('auth.failed')])->withInput($request->except('password'));
     }
 
     public function loginForm()
     {
-        return view('auth.login'); // Assure-toi que la vue existe dans resources/views/auth/login.blade.php
+        return view('auth.login');
     }
 
     public function logout()

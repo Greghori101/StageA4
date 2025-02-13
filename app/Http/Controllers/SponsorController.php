@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Sponsor;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class SponsorController extends Controller
 {
@@ -15,7 +14,7 @@ class SponsorController extends Controller
         $query = Sponsor::query();
 
         if ($request->filled('search')) {
-            $query->where('nom', 'like', '%' . $request->search . '%');
+            $query->where('name', 'like', '%' . $request->search . '%');
         }
 
         if ($request->filled('category')) {
@@ -34,35 +33,32 @@ class SponsorController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nom' => 'required|string|max:255',
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'category' => 'nullable|string|max:255',
             'logo' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
-            'fichier' => 'nullable|array|max:10240', // Permet plusieurs fichiers
-            'fichier.*' => 'file|mimes:jpg,jpeg,png,pdf,mp4,avi|max:10240', // Acceptation de plusieurs types de fichiers
+            'files' => 'nullable|array|max:10240',
+            'files.*' => 'file|mimes:jpg,jpeg,png,pdf,mp4,avi|max:10240',
         ]);
 
-        $logoPath = $request->hasFile('logo') ? $request->file('logo')->store('logos', 'public') : null;
+        $sponsor = Sponsor::create([
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+            'category' => $validated['category'] ?? null,
+        ]);
 
-        // Gestion des fichiers
-        $fichiersPaths = [];
-        if ($request->hasFile('fichier')) {
-            foreach ($request->file('fichier') as $file) {
-                $fichiersPaths[] = $file->store('fichiers', 'public');
+        if ($request->hasFile('logo')) {
+            $sponsor->addMedia($request->file('logo'))->toMediaCollection('logos');
+        }
+
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $sponsor->addMedia($file)->toMediaCollection('files');
             }
         }
 
-        // Crée un nouveau sponsor avec le logo et les fichiers
-        $sponsor = Sponsor::create([
-            'nom' => $request->input('nom'),
-            'description' => $request->input('description'),
-            'category' => $request->input('category'),
-            'logo' => $logoPath,
-            'fichier' => json_encode($fichiersPaths), // Stocke les fichiers sous forme de tableau JSON
-        ]);
-
-        return redirect()->route('sponsors.index')->with('success', 'Sponsor créé avec succès!');
+        return redirect()->route('sponsors.index')->with('success', 'Sponsor created successfully.');
     }
 
     public function edit(Sponsor $sponsor)
@@ -72,68 +68,44 @@ class SponsorController extends Controller
 
     public function update(Request $request, Sponsor $sponsor)
     {
-        $request->validate([
-            'nom' => 'required|string|max:255',
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'category' => 'required|string|max:255',
             'logo' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
-            'fichier' => 'nullable|array|max:10240', // Permet plusieurs fichiers
-            'fichier.*' => 'file|mimes:jpg,jpeg,png,pdf,mp4,avi|max:10240',
+            'files' => 'nullable|array|max:10240',
+            'files.*' => 'file|mimes:jpg,jpeg,png,pdf,mp4,avi|max:10240',
         ]);
-
-        // Gestion du logo
-        if ($request->hasFile('logo')) {
-            if ($sponsor->logo) {
-                Storage::delete('public/' . $sponsor->logo);
-            }
-            $logoPath = $request->file('logo')->store('logos', 'public');
-        } else {
-            $logoPath = $sponsor->logo;
-        }
-
-        // Gestion des fichiers
-        $fichiersPaths = json_decode($sponsor->fichier, true) ?: [];
-        if ($request->hasFile('fichier')) {
-        foreach ($fichiersPaths as $fichier) {
-            Storage::delete('public/' . $fichier);
-            }
-        foreach ($request->file('fichier') as $file) {
-            $fichiersPaths[] = $file->store('fichiers', 'public');
-            }
-        }
 
         $sponsor->update([
-            'nom' => $request->input('nom'),
-            'description' => $request->input('description'),
-            'category' => $request->input('category'),
-            'logo' => $logoPath,
-            'fichier' => json_encode($fichiersPaths),
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+            'category' => $validated['category'],
         ]);
 
-        return redirect()->route('sponsors.index')->with('success', 'Sponsor mis à jour avec succès!');
-    }
+        if ($request->hasFile('logo')) {
+            $sponsor->clearMediaCollection('logos');
+            $sponsor->addMedia($request->file('logo'))->toMediaCollection('logos');
+        }
 
+        if ($request->hasFile('files')) {
+            $sponsor->clearMediaCollection('files');
+            foreach ($request->file('files') as $file) {
+                $sponsor->addMedia($file)->toMediaCollection('files');
+            }
+        }
+
+        return redirect()->route('sponsors.index')->with('success', 'Sponsor updated successfully.');
+    }
 
     public function destroy(Sponsor $sponsor)
     {
-        // Supprimer le logo
-        if ($sponsor->logo) {
-            Storage::delete('public/' . $sponsor->logo);
-        }
-
-        // Supprimer les fichiers
-        if ($sponsor->fichier) {
-            $fichiersPaths = json_decode($sponsor->fichier, true);
-            foreach ($fichiersPaths as $fichier) {
-                Storage::delete('public/' . $fichier);
-            }
-        }
-
+        $sponsor->clearMediaCollection('logos');
+        $sponsor->clearMediaCollection('files');
         $sponsor->delete();
 
-        return redirect()->route('sponsors.index')->with('success', 'Sponsor supprimé avec succès!');
+        return redirect()->route('sponsors.index')->with('success', 'Sponsor deleted successfully.');
     }
-
 
     public function showByCategory($category)
     {

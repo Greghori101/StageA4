@@ -3,194 +3,135 @@
 namespace App\Http\Controllers;
 
 use App\Models\Communication;
-use App\Models\Sessi;
-use App\Models\Salle;
-use App\Models\Orateur;
-
+use App\Models\ProgramSession;
+use App\Models\Room;
+use App\Models\Speaker;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 class CommunicationsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index($sessi_id)
+    public function index($programSessionId)
     {
-        $sessi = Sessi::findOrFail($sessi_id);  // Trouve la session avec l'ID
-        $communications = Communication::where('sessis_id', $sessi_id)->distinct()->get(); // Récupère les communications de cette session
+        $programSession = ProgramSession::findOrFail($programSessionId);
+        $communications = Communication::where('program_session_id', $programSessionId)->distinct()->get();
 
-        return view('communications.index', compact('communications', 'sessi'));
+        return view('communications.index', compact('communications', 'programSession'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create($sessi_id)
+    public function create($programSessionId)
     {
-        $sessi = Sessi::findOrFail($sessi_id); // Vérifie si la session existe
-        $salles = Salle::all();
-        $orateurs = Orateur::all();
+        $programSession = ProgramSession::findOrFail($programSessionId);
+        $rooms = Room::all();
+        $speakers = Speaker::all();
 
-        return view('communications.create', compact('sessi', 'salles', 'orateurs'));
+        return view('communications.create', compact('programSession', 'rooms', 'speakers'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        // Validation des données
         $validated = $request->validate([
-            'titre' => 'required|string|max:255|unique:communications,titre,NULL,id,sessis_id,' . $request->sessis_id,
+            'title' => 'required|string|max:255|unique:communications,title,NULL,id,program_session_id,' . $request->program_session_id,
             'description' => 'nullable|string',
-            'type' => 'required|string|in:communication,symposium,atelier,pause',
-            'salle_id' => 'required|exists:salles,id',
+            'type' => 'required|string|in:communication,symposium,workshop,break',
+            'room_id' => 'required|exists:rooms,id',
             'date' => 'required|date',
-            'heure_debut' => 'required|date_format:H:i|before:heure_fin',
-            'heure_fin' => 'required|date_format:H:i|after:heure_debut',
-            'sessis_id' => 'required|exists:sessis,id',  // Valider l'ID de la session
-            'orateurs' => 'array|nullable', // Valider un tableau d'IDs d'orateurs
-            'orateurs.*' => 'exists:orateurs,id', // Chaque ID doit exister dans la table orateurs
+            'start_time' => 'required|date_format:H:i|before:end_time',
+            'end_time' => 'required|date_format:H:i|after:start_time',
+            'program_session_id' => 'required|exists:program_sessions,id',
+            'speakers' => 'array|nullable',
+            'speakers.*' => 'exists:speakers,id',
         ]);
 
-        $communication = Communication::create($validated);
+        $programSession = ProgramSession::findOrFail($validated['program_session_id']);
+        $sessionTimezone = $programSession->timezone ?? 'UTC';
 
-        // Associer les orateurs à la communication
-        if (!empty($validated['orateurs'])) {
-            $communication->orateurs()->sync($validated['orateurs']);
+        $communicationDateStart = Carbon::parse($validated['date'] . ' ' . $validated['start_time'])
+                                        ->setTimezone($sessionTimezone);
+
+        $communicationDateEnd = Carbon::parse($validated['date'] . ' ' . $validated['end_time'])
+                                      ->setTimezone($sessionTimezone);
+
+        $sessionDate = Carbon::parse($programSession->date)->setTimezone($sessionTimezone)->startOfDay();
+
+        if (!$communicationDateStart->isSameDay($sessionDate)) {
+            return redirect()->back()->withErrors(['date_mismatch' => 'The communication date must match the program session date.']);
         }
 
-        // Trouver la session avec l'ID
-        $sessi = Sessi::findOrFail($validated['sessis_id']);
-
-        // Le fuseau horaire de la session
-        $sessionTimezone = $sessi->timezone ?? 'UTC';  // Par défaut 'UTC' si le fuseau horaire n'est pas défini
-
-        // Conversion de la date et heure de début de la communication dans le fuseau horaire de la session
-        $communicationDateDebut = Carbon::parse($validated['date'] . ' ' . $validated['heure_debut'])
-                                       ->setTimezone($sessionTimezone); // Convertir dans le fuseau horaire de la session
-
-        // Convertir l'heure de fin de la communication dans le fuseau horaire de la session
-        $communicationDateFin = Carbon::parse($validated['date'] . ' ' . $validated['heure_fin'])
-                                      ->setTimezone($sessionTimezone); // Convertir dans le fuseau horaire de la session
-
-        // Comparer la date de la communication avec celle de la session
-        $sessionDate = Carbon::parse($sessi->date)->setTimezone($sessionTimezone)->startOfDay();
-
-        // Vérifier que la date de la communication est la même que celle de la session (juste la date sans l'heure)
-        if (!$communicationDateDebut->isSameDay($sessionDate)) {
-            return redirect()->back()->withErrors(['date_mismatch' => 'La date de la communication doit être la même que celle de la session.']);
-        }
-
-        // Vérifier si une communication avec les mêmes paramètres existe déjà
-        $existingCommunication = Communication::where('titre', $validated['titre'])
+        $existingCommunication = Communication::where('title', $validated['title'])
                                               ->where('date', $validated['date'])
-                                              ->where('sessis_id', $validated['sessis_id'])
+                                              ->where('program_session_id', $validated['program_session_id'])
                                               ->first();
 
         if ($existingCommunication) {
-            return redirect()->back()->withErrors(['duplicate' => 'Cette communication existe déjà pour cette session.']);
+            return redirect()->back()->withErrors(['duplicate' => 'This communication already exists for this program session.']);
         }
 
-        // Créer la communication si elle n'existe pas
-        $communication = new Communication();
-        $communication->titre = $validated['titre'];
-        $communication->description = $validated['description'];
-        $communication->type = $validated['type'];
-        $communication->date = $validated['date'];
-        $communication->heure_debut = $validated['heure_debut'];
-        $communication->heure_fin = $validated['heure_fin'];
-        $communication->salle_id = $validated['salle_id'];
-        $communication->sessis_id = $validated['sessis_id'];
-        $communication->save();
+        $communication = Communication::create($validated);
 
-        // Rediriger vers la page des communications de la session
-        return redirect()->route('sessis.communications', $validated['sessis_id'])->with('success', 'Communication créée avec succès.');
+        if (!empty($validated['speakers'])) {
+            $communication->speakers()->sync($validated['speakers']);
+        }
+
+        return redirect()->route('program-sessions.communications', $validated['program_session_id'])
+                         ->with('success', 'Communication created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show($id)
     {
-        // Récupérer la communication avec les questions traitées et les relations nécessaires
         $communication = Communication::with([
-            'orateurs',
-            'salle',
-            'questions' => function ($query) {
-                $query->where('statut', 'traitée'); // Filtrer uniquement les questions traitées
-            }
+            'speakers',
+            'room',
+            'questions' => fn($query) => $query->where('status', 'answered')
         ])->findOrFail($id);
 
-        // Retourner la vue avec les données nécessaires
         return view('communications.show', compact('communication'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($id)
     {
         $communication = Communication::findOrFail($id);
-        $sessi = Sessi::all(); // Récupère toutes les sessions
-        $salles = Salle::all();   // Récupère toutes les salles
-        $orateurs = Orateur::all(); // Récupère tous les orateurs
+        $programSessions = ProgramSession::all();
+        $rooms = Room::all();
+        $speakers = Speaker::all();
 
-        return view('communications.edit', compact('communication', 'sessi', 'salles', 'orateurs'));
+        return view('communications.edit', compact('communication', 'programSessions', 'rooms', 'speakers'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
-        // Validation des données
         $validated = $request->validate([
-            'titre' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'date' => 'required|date',
-            'heure_debut' => 'required|date_format:H:i',
-            'heure_fin' => 'required|date_format:H:i|after:heure_debut',
-            'type' => 'required|in:communication,symposium,atelier,pause',
-            'sessis_id' => 'required|exists:sessis,id',
-            'salle_id' => 'required|exists:salles,id',
-            'orateurs' => 'array|nullable',
-            'orateurs.*' => 'exists:orateurs,id',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
+            'type' => 'required|in:communication,symposium,workshop,break',
+            'program_session_id' => 'required|exists:program_sessions,id',
+            'room_id' => 'required|exists:rooms,id',
+            'speakers' => 'array|nullable',
+            'speakers.*' => 'exists:speakers,id',
         ]);
 
-        // Trouver la communication par ID
         $communication = Communication::findOrFail($id);
-
-        // Mise à jour de la communication
         $communication->update($validated);
 
-        // Mettre à jour les orateurs associés
-        if (!empty($validated['orateurs'])) {
-            $communication->orateurs()->sync($validated['orateurs']);
+        if (!empty($validated['speakers'])) {
+            $communication->speakers()->sync($validated['speakers']);
         } else {
-            $communication->orateurs()->detach(); // Supprimer tous les orateurs si aucun n'est fourni
+            $communication->speakers()->detach();
         }
 
-        // Rediriger avec un message de succès
-        return redirect()->route('communications.index', $communication->sessis_id)
-            ->with('success', 'Communication mise à jour avec succès.');
+        return redirect()->route('communications.index', $communication->program_session_id)
+                         ->with('success', 'Communication updated successfully.');
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
-        // Récupérer la communication par son ID
         $communication = Communication::findOrFail($id);
-
-        // Supprimer la communication
         $communication->delete();
 
-        // Rediriger vers la page de la session ou la liste des communications
-        return redirect()->route('sessis.show', $communication->sessis_id)
-                         ->with('success', 'Communication supprimée avec succès.');
+        return redirect()->route('program-sessions.show', $communication->program_session_id)
+                         ->with('success', 'Communication deleted successfully.');
     }
 }
