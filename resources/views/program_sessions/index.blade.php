@@ -36,6 +36,7 @@
                 <th>Date</th>
                 <th>Heure de début</th>
                 <th>Heure de fin</th>
+                <th>Communications</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -48,6 +49,22 @@
                     <td>{{ $session->start_time }}</td>
                     <td>{{ $session->end_time }}</td>
                     <td>
+                        @if ($session->communications->isNotEmpty())
+                            <ul>
+                                @foreach ($session->communications as $communication)
+                                    <li>
+                                        <a href="{{ route('communications.show', $communication->id) }}">
+                                            {{ $communication->title }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <span class="text-muted">Aucune</span>
+                        @endif
+                    </td>
+                    <td>
+                        <a href="{{ route('program_sessions.show', $session->id) }}" class="btn btn-info btn-sm">Voir</a>
                         <a href="{{ route('program_sessions.edit', $session->id) }}" class="btn btn-warning btn-sm">Modifier</a>
 
                         <form action="{{ route('program_sessions.destroy', $session->id) }}" method="POST" style="display:inline-block;">

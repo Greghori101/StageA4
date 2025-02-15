@@ -2,54 +2,58 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">{{ $communication->title }}</h1>
+    <h1>{{ $communication->title }}</h1>
 
-    <div class="card">
+    <div class="card mt-4">
         <div class="card-body">
-            <p><strong>Description:</strong> {{ $communication->description }}</p>
-            <p><strong>Date:</strong> {{ $communication->date }}</p>
-            <p><strong>Time:</strong> {{ $communication->start_time }} - {{ $communication->end_time }}</p>
-            <p><strong>Type:</strong> {{ ucfirst($communication->type) }}</p>
-            <p><strong>Program Session:</strong> {{ $communication->programSession?->name ?? 'N/A' }}</p>
-            <p><strong>Room:</strong> {{ $communication->room?->name ?? 'N/A' }}</p>
+            <h5 class="card-title">Détails de la Communication</h5>
 
-            <h5>Speakers</h5>
-            <ul>
-                @forelse ($communication->speakers as $speaker)
-                    <li>{{ $speaker->full_name }}</li>
-                @empty
-                    <li>No speakers assigned.</li>
-                @endforelse
-            </ul>
+            <p><strong>Description:</strong> {{ $communication->description ?? 'Aucune description' }}</p>
+            <p><strong>Date:</strong> {{ $communication->date }}</p>
+            <p><strong>Heure de début:</strong> {{ $communication->start_time }}</p>
+            <p><strong>Heure de fin:</strong> {{ $communication->end_time }}</p>
+            <p><strong>Type:</strong> {{ $communication->type }}</p>
+
+            <hr>
+
+            <h5>Session du Programme</h5>
+            <p>{{ $communication->programSession->name ?? 'Non attribuée' }}</p>
+
+            <h5>Salle</h5>
+            <p>{{ $communication->room->name ?? 'Non attribuée' }}</p>
+
+            <h5>Intervenants</h5>
+            @if ($communication->speakers->isNotEmpty())
+                <ul>
+                    @foreach ($communication->speakers as $speaker)
+                        <li>{{ $speaker->name }}</li>
+                    @endforeach
+                </ul>
+            @else
+                <p>Aucun intervenant</p>
+            @endif
 
             <h5>Sponsors</h5>
-            <ul>
-                @forelse ($communication->sponsors as $sponsor)
-                    <li>{{ $sponsor->name }}</li>
-                @empty
-                    <li>No sponsors assigned.</li>
-                @endforelse
-            </ul>
-
-            <h5>Questions</h5>
-            <ul>
-                @forelse ($communication->questions as $question)
-                    <li>{{ $question->content }}</li>
-                @empty
-                    <li>No questions asked.</li>
-                @endforelse
-            </ul>
-
-            <a href="{{ route('communications.edit', $communication) }}" class="btn btn-warning">Edit</a>
-
-            <form action="{{ route('communications.destroy', $communication) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?');">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-danger">Delete</button>
-            </form>
-
-            <a href="{{ route('communications.index') }}" class="btn btn-secondary">Back to List</a>
+            @if ($communication->sponsors->isNotEmpty())
+                <ul>
+                    @foreach ($communication->sponsors as $sponsor)
+                        <li>{{ $sponsor->name }}</li>
+                    @endforeach
+                </ul>
+            @else
+                <p>Aucun sponsor</p>
+            @endif
         </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ route('communications.edit', $communication) }}" class="btn btn-primary">Modifier</a>
+        <form action="{{ route('communications.destroy', $communication) }}" method="POST" class="d-inline">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette communication ?');">Supprimer</button>
+        </form>
+        <a href="{{ route('communications.index') }}" class="btn btn-secondary">Retour</a>
     </div>
 </div>
 @endsection

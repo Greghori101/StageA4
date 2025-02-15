@@ -41,6 +41,14 @@ class User extends Authenticatable implements HasMedia
     ];
 
     /**
+     * Get the user's name.
+     */
+    public function getNameAttribute()
+    {
+        return $this->nickname ?: $this->full_name;
+    }
+
+    /**
      * Attributes that should be cast.
      *
      * @var array<string, string>

@@ -16,6 +16,15 @@ class ProgramSessionController extends Controller
         return view('program_sessions.index', compact('sessions'));
     }
 
+    public function show(ProgramSession $programSession)
+    {
+        // Load related communications
+        $programSession->load('communications');
+
+        return view('program_sessions.show', compact('programSession'));
+    }
+
+
     /**
      * Show the form for creating a new program session.
      */

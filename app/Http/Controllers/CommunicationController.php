@@ -27,11 +27,12 @@ class CommunicationController extends Controller
     {
         $programSessions = ProgramSession::all();
         $rooms = Room::all();
-        $speakers = Speaker::all();
+        $speakers = Speaker::all(); // Assurez-vous que cette ligne est bien présente
         $sponsors = Sponsor::all();
 
         return view('communications.create', compact('programSessions', 'rooms', 'speakers', 'sponsors'));
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -47,31 +48,18 @@ class CommunicationController extends Controller
             'type' => 'required|string',
             'program_session_id' => 'nullable|exists:program_sessions,id',
             'room_id' => 'nullable|exists:rooms,id',
-            'speakers' => 'array',
+            'speakers' => 'nullable|array',
             'speakers.*' => 'exists:speakers,id',
-            'sponsors' => 'array',
+            'sponsors' => 'nullable|array',
             'sponsors.*' => 'exists:sponsors,id',
         ]);
 
         $communication = Communication::create($validated);
 
-        if ($request->has('speakers')) {
-            $communication->speakers()->sync($request->speakers);
-        }
+        $communication->speakers()->sync($request->speakers ?? []);
+        $communication->sponsors()->sync($request->sponsors ?? []);
 
-        if ($request->has('sponsors')) {
-            $communication->sponsors()->sync($request->sponsors);
-        }
-
-        return redirect()->route('communications.index')->with('success', 'Communication created successfully.');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Communication $communication)
-    {
-        return view('communications.show', compact('communication'));
+        return redirect()->route('communications.index')->with('success', 'Communication créée avec succès.');
     }
 
     /**
@@ -101,23 +89,18 @@ class CommunicationController extends Controller
             'type' => 'required|string',
             'program_session_id' => 'nullable|exists:program_sessions,id',
             'room_id' => 'nullable|exists:rooms,id',
-            'speakers' => 'array',
+            'speakers' => 'nullable|array',
             'speakers.*' => 'exists:speakers,id',
-            'sponsors' => 'array',
+            'sponsors' => 'nullable|array',
             'sponsors.*' => 'exists:sponsors,id',
         ]);
 
         $communication->update($validated);
 
-        if ($request->has('speakers')) {
-            $communication->speakers()->sync($request->speakers);
-        }
+        $communication->speakers()->sync($request->speakers ?? []);
+        $communication->sponsors()->sync($request->sponsors ?? []);
 
-        if ($request->has('sponsors')) {
-            $communication->sponsors()->sync($request->sponsors);
-        }
-
-        return redirect()->route('communications.index')->with('success', 'Communication updated successfully.');
+        return redirect()->route('communications.index')->with('success', 'Communication mise à jour avec succès.');
     }
 
     /**
@@ -126,6 +109,6 @@ class CommunicationController extends Controller
     public function destroy(Communication $communication)
     {
         $communication->delete();
-        return redirect()->route('communications.index')->with('success', 'Communication deleted successfully.');
+        return redirect()->route('communications.index')->with('success', 'Communication supprimée avec succès.');
     }
 }

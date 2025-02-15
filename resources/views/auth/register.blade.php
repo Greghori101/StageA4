@@ -12,11 +12,11 @@
                         @csrf
 
                         <div class="form-group row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Nom complet') }}</label>
+                            <label for="full_name" class="col-md-4 col-form-label text-md-right">{{ __('Nom complet') }}</label>
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror"
-                                       name="name" value="{{ old('name') }}" required autofocus>
-                                @error('name')
+                                <input id="full_name" type="text" class="form-control @error('full_name') is-invalid @enderror"
+                                       name="full_name" value="{{ old('full_name') }}" required autofocus>
+                                @error('full_name')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -38,11 +38,11 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="fonction" class="col-md-4 col-form-label text-md-right">{{ __('Fonction') }}</label>
+                            <label for="nickname" class="col-md-4 col-form-label text-md-right">{{ __('Surnom (optionnel)') }}</label>
                             <div class="col-md-6">
-                                <input id="fonction" type="text" class="form-control @error('fonction') is-invalid @enderror"
-                                       name="fonction" value="{{ old('fonction') }}" required>
-                                @error('fonction')
+                                <input id="nickname" type="text" class="form-control @error('nickname') is-invalid @enderror"
+                                       name="nickname" value="{{ old('nickname') }}">
+                                @error('nickname')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -51,11 +51,11 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="etablissement" class="col-md-4 col-form-label text-md-right">{{ __('Établissement') }}</label>
+                            <label for="institution" class="col-md-4 col-form-label text-md-right">{{ __('Institution') }}</label>
                             <div class="col-md-6">
-                                <input id="etablissement" type="text" class="form-control @error('etablissement') is-invalid @enderror"
-                                       name="etablissement" value="{{ old('etablissement') }}" required>
-                                @error('etablissement')
+                                <input id="institution" type="text" class="form-control @error('institution') is-invalid @enderror"
+                                       name="institution" value="{{ old('institution') }}">
+                                @error('institution')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -67,7 +67,7 @@
                             <label for="address" class="col-md-4 col-form-label text-md-right">{{ __('Adresse') }}</label>
                             <div class="col-md-6">
                                 <input id="address" type="text" class="form-control @error('address') is-invalid @enderror"
-                                       name="address" value="{{ old('address') }}" required>
+                                       name="address" value="{{ old('address') }}">
                                 @error('address')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -77,11 +77,11 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="pays" class="col-md-4 col-form-label text-md-right">{{ __('Pays') }}</label>
+                            <label for="country" class="col-md-4 col-form-label text-md-right">{{ __('Pays') }}</label>
                             <div class="col-md-6">
-                                <input id="pays" type="text" class="form-control @error('pays') is-invalid @enderror"
-                                       name="pays" value="{{ old('pays') }}" required>
-                                @error('pays')
+                                <input id="country" type="text" class="form-control @error('country') is-invalid @enderror"
+                                       name="country" value="{{ old('country') }}">
+                                @error('country')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -90,49 +90,15 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="wilaya" class="col-md-4 col-form-label text-md-right">{{ __('Wilaya') }}</label>
+                            <label for="state" class="col-md-4 col-form-label text-md-right">{{ __('État / Région') }}</label>
                             <div class="col-md-6">
-                                <input id="wilaya" type="text" class="form-control @error('wilaya') is-invalid @enderror"
-                                       name="wilaya" value="{{ old('wilaya') }}" required>
-                                @error('wilaya')
+                                <input id="state" type="text" class="form-control @error('state') is-invalid @enderror"
+                                       name="state" value="{{ old('state') }}">
+                                @error('state')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="phone_number" class="col-md-4 col-form-label text-md-right">{{ __('Numéro de téléphone') }}</label>
-                            <div class="col-md-6">
-                                <input id="phone_number" type="text" class="form-control @error('phone_number') is-invalid @enderror"
-                                       name="phone_number" value="{{ old('phone_number') }}" required>
-                                @error('phone_number')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Mot de passe') }}</label>
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
-                                       name="password" required>
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password_confirmation" class="col-md-4 col-form-label text-md-right">{{ __('Confirmer le mot de passe') }}</label>
-                            <div class="col-md-6">
-                                <input id="password_confirmation" type="password" class="form-control"
-                                       name="password_confirmation" required>
                             </div>
                         </div>
 
