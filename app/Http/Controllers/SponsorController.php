@@ -4,114 +4,109 @@ namespace App\Http\Controllers;
 
 use App\Models\Sponsor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SponsorController extends Controller
 {
-    public function index(Request $request)
+    /**
+     * Display a listing of sponsors.
+     */
+    public function index()
     {
-        $categories = Sponsor::select('category')->distinct()->get();
-
-        $query = Sponsor::query();
-
-        if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
-        }
-
-        if ($request->filled('category')) {
-            $query->where('category', $request->category);
-        }
-
-        $sponsors = $query->get();
-
-        return view('sponsors.index', compact('sponsors', 'categories'));
+        $sponsors = Sponsor::paginate(10);
+        return view('sponsors.index', compact('sponsors'));
     }
 
+    /**
+     * Show the form for creating a new sponsor.
+     */
     public function create()
     {
         return view('sponsors.create');
     }
 
+    /**
+     * Store a newly created sponsor.
+     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'category' => 'nullable|string|max:255',
-            'logo' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
-            'files' => 'nullable|array|max:10240',
-            'files.*' => 'file|mimes:jpg,jpeg,png,pdf,mp4,avi|max:10240',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'files' => 'nullable|file|max:5120',
         ]);
 
-        $sponsor = Sponsor::create([
-            'name' => $validated['name'],
-            'description' => $validated['description'] ?? null,
-            'category' => $validated['category'] ?? null,
-        ]);
+        $sponsor = Sponsor::create($request->only(['name', 'description', 'category']));
 
+        // Upload logo
         if ($request->hasFile('logo')) {
-            $sponsor->addMedia($request->file('logo'))->toMediaCollection('logos');
+            $sponsor->addMedia($request->file('logo'))->toMediaCollection('logo');
         }
 
+        // Upload additional files
         if ($request->hasFile('files')) {
-            foreach ($request->file('files') as $file) {
-                $sponsor->addMedia($file)->toMediaCollection('files');
-            }
+            $sponsor->addMedia($request->file('files'))->toMediaCollection('sponsors');
         }
 
-        return redirect()->route('sponsors.index')->with('success', 'Sponsor created successfully.');
+        return redirect()->route('sponsors.index')->with('success', 'Sponsor created successfully!');
     }
 
+    /**
+     * Display the specified sponsor.
+     */
+    public function show(Sponsor $sponsor)
+    {
+        return view('sponsors.show', compact('sponsor'));
+    }
+
+    /**
+     * Show the form for editing the specified sponsor.
+     */
     public function edit(Sponsor $sponsor)
     {
         return view('sponsors.edit', compact('sponsor'));
     }
 
+    /**
+     * Update the specified sponsor.
+     */
     public function update(Request $request, Sponsor $sponsor)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'category' => 'required|string|max:255',
-            'logo' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
-            'files' => 'nullable|array|max:10240',
-            'files.*' => 'file|mimes:jpg,jpeg,png,pdf,mp4,avi|max:10240',
+            'category' => 'nullable|string|max:255',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'files' => 'nullable|file|max:5120',
         ]);
 
-        $sponsor->update([
-            'name' => $validated['name'],
-            'description' => $validated['description'],
-            'category' => $validated['category'],
-        ]);
+        $sponsor->update($request->only(['name', 'description', 'category']));
 
+        // Update logo if new one is uploaded
         if ($request->hasFile('logo')) {
-            $sponsor->clearMediaCollection('logos');
-            $sponsor->addMedia($request->file('logo'))->toMediaCollection('logos');
+            $sponsor->clearMediaCollection('logo');
+            $sponsor->addMedia($request->file('logo'))->toMediaCollection('logo');
         }
 
+        // Update files if new one is uploaded
         if ($request->hasFile('files')) {
-            $sponsor->clearMediaCollection('files');
-            foreach ($request->file('files') as $file) {
-                $sponsor->addMedia($file)->toMediaCollection('files');
-            }
+            $sponsor->clearMediaCollection('sponsors');
+            $sponsor->addMedia($request->file('files'))->toMediaCollection('sponsors');
         }
 
-        return redirect()->route('sponsors.index')->with('success', 'Sponsor updated successfully.');
+        return redirect()->route('sponsors.index')->with('success', 'Sponsor updated successfully!');
     }
 
+    /**
+     * Remove the specified sponsor.
+     */
     public function destroy(Sponsor $sponsor)
     {
-        $sponsor->clearMediaCollection('logos');
-        $sponsor->clearMediaCollection('files');
+        $sponsor->clearMediaCollection(); // Remove all media
         $sponsor->delete();
 
-        return redirect()->route('sponsors.index')->with('success', 'Sponsor deleted successfully.');
-    }
-
-    public function showByCategory($category)
-    {
-        $categories = Sponsor::select('category')->distinct()->get();
-        $sponsors = Sponsor::where('category', $category)->get();
-
-        return view('sponsors.index', compact('sponsors', 'categories'));
+        return redirect()->route('sponsors.index')->with('success', 'Sponsor deleted successfully!');
     }
 }

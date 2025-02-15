@@ -23,6 +23,14 @@ class Question extends Model
     ];
 
     /**
+     * Get the user associated with the question.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
      * Get the communication associated with the question.
      */
     public function communication()

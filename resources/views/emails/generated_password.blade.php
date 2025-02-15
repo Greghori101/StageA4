@@ -1,18 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Details</title>
+    <title>Votre compte a été créé</title>
 </head>
 <body>
-    <p>Hello {{ $user->full_name }},</p>
-    <p>Your account has been created. Here are your login details:</p>
-    <ul>
-        <li><strong>Email:</strong> {{ $user->email }}</li>
-        <li><strong>Password:</strong> {{ $password }}</li>
-    </ul>
-    <p>Please log in and change your password as soon as possible.</p>
-    <p>Best regards,<br>Admin Team</p>
+    <p>Bonjour {{ $user->full_name }},</p>
+
+    <p>Votre compte a été créé avec succès. Voici vos identifiants :</p>
+
+    <p><strong>Email :</strong> {{ $user->email }}</p>
+    <p><strong>Mot de passe :</strong> {{ $password }}</p>
+
+    <p>Nous vous recommandons de changer votre mot de passe après connexion.</p>
+
+    <p>Cordialement,</p>
+    <p>L'équipe</p>
 </body>
 </html>

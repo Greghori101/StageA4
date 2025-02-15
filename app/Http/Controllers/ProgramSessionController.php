@@ -3,101 +3,75 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProgramSession;
-use App\Models\Speaker;
-use App\Models\Room;
 use Illuminate\Http\Request;
 
 class ProgramSessionController extends Controller
 {
+    /**
+     * Display a listing of the program sessions.
+     */
     public function index()
     {
-        $sessions = ProgramSession::with(['speakers', 'communications.room'])
-            ->orderBy('date')
-            ->orderBy('start_time')
-            ->get();
-
-        $rooms = Room::all();
-
-        return view('program_sessions.index', compact('sessions', 'rooms'));
+        $sessions = ProgramSession::latest()->paginate(10);
+        return view('program_sessions.index', compact('sessions'));
     }
 
+    /**
+     * Show the form for creating a new program session.
+     */
     public function create()
     {
-        $speakers = Speaker::all();
-        return view('program_sessions.create', compact('speakers'));
+        return view('program_sessions.create');
     }
 
+    /**
+     * Store a newly created program session.
+     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
             'date' => 'required|date',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
-            'speakers' => 'nullable|array',
-            'speakers.*' => 'exists:speakers,id',
-            'communications' => 'nullable|array',
-            'communications.*.title' => 'required|string|max:255',
-            'communications.*.description' => 'nullable|string',
-            'communications.*.date' => 'required|date',
-            'communications.*.start_time' => 'required|date_format:H:i',
-            'communications.*.end_time' => 'required|date_format:H:i|after:communications.*.start_time',
-            'communications.*.type' => 'required|in:communication,symposium,workshop,break',
-            'communications.*.room_id' => 'required|exists:rooms,id',
+            'start_time' => 'required',
+            'end_time' => 'required|after:start_time',
         ]);
 
-        $session = ProgramSession::create($validated);
+        ProgramSession::create($request->all());
 
-        if (isset($validated['speakers'])) {
-            $session->speakers()->attach($validated['speakers']);
-        }
-
-        if (isset($validated['communications'])) {
-            foreach ($validated['communications'] as $communication) {
-                $session->communications()->create($communication);
-            }
-        }
-
-        return redirect()->route('program_sessions.index')->with('success', 'Session and communications created successfully.');
+        return redirect()->route('program_sessions.index')->with('success', 'Session ajoutée avec succès.');
     }
 
-    public function edit(string $id)
+    /**
+     * Show the form for editing the specified program session.
+     */
+    public function edit(ProgramSession $programSession)
     {
-        $session = ProgramSession::with('communications')->findOrFail($id);
-        $session->start_time = date('H:i', strtotime($session->start_time));
-        $session->end_time = date('H:i', strtotime($session->end_time));
-
-        $rooms = Room::all();
-        $speakers = Speaker::all();
-
-        return view('program_sessions.edit', compact('session', 'rooms', 'speakers'));
+        return view('program_sessions.edit', compact('programSession'));
     }
 
-    public function update(Request $request, string $id)
+    /**
+     * Update the specified program session.
+     */
+    public function update(Request $request, ProgramSession $programSession)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
             'date' => 'required|date',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
-            'speakers' => 'nullable|array',
+            'start_time' => 'required',
+            'end_time' => 'required|after:start_time',
         ]);
 
-        $session = ProgramSession::findOrFail($id);
-        $session->update($validated);
+        $programSession->update($request->all());
 
-        if (isset($validated['speakers'])) {
-            $session->speakers()->sync($validated['speakers']);
-        }
-
-        return redirect()->route('program_sessions.index')->with('success', 'Session updated successfully.');
+        return redirect()->route('program_sessions.index')->with('success', 'Session mise à jour avec succès.');
     }
 
-    public function destroy(string $id)
+    /**
+     * Remove the specified program session.
+     */
+    public function destroy(ProgramSession $programSession)
     {
-        $session = ProgramSession::findOrFail($id);
-        $session->delete();
-
-        return redirect()->route('program_sessions.index')->with('success', 'Session deleted successfully.');
+        $programSession->delete();
+        return redirect()->route('program_sessions.index')->with('success', 'Session supprimée avec succès.');
     }
 }

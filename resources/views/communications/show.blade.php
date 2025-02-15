@@ -1,66 +1,55 @@
 @extends('base')
 
-@section('title', 'Détails de la Communication')
-
 @section('content')
-<div class="container mt-4">
-    <!-- Titre de la communication -->
-    <div class="text-center mb-5">
-        <h1 class="display-4">{{ $communication->titre }}</h1>
-        <p class="text-muted">{{ $communication->description }}</p>
-    </div>
+<div class="container">
+    <h1 class="mb-4">{{ $communication->title }}</h1>
 
-    <!-- Informations sur la communication -->
-    <div class="row justify-content-center mb-5">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <p><strong>Date et horaire :</strong></p>
-                    <p>{{ $communication->heure_debut }} - {{ $communication->heure_fin }}</p>
-                    <p><strong>Salle :</strong> {{ $communication->salle->nom ?? 'Non spécifiée' }}</p>
-                </div>
-            </div>
+    <div class="card">
+        <div class="card-body">
+            <p><strong>Description:</strong> {{ $communication->description }}</p>
+            <p><strong>Date:</strong> {{ $communication->date }}</p>
+            <p><strong>Time:</strong> {{ $communication->start_time }} - {{ $communication->end_time }}</p>
+            <p><strong>Type:</strong> {{ ucfirst($communication->type) }}</p>
+            <p><strong>Program Session:</strong> {{ $communication->programSession?->name ?? 'N/A' }}</p>
+            <p><strong>Room:</strong> {{ $communication->room?->name ?? 'N/A' }}</p>
+
+            <h5>Speakers</h5>
+            <ul>
+                @forelse ($communication->speakers as $speaker)
+                    <li>{{ $speaker->full_name }}</li>
+                @empty
+                    <li>No speakers assigned.</li>
+                @endforelse
+            </ul>
+
+            <h5>Sponsors</h5>
+            <ul>
+                @forelse ($communication->sponsors as $sponsor)
+                    <li>{{ $sponsor->name }}</li>
+                @empty
+                    <li>No sponsors assigned.</li>
+                @endforelse
+            </ul>
+
+            <h5>Questions</h5>
+            <ul>
+                @forelse ($communication->questions as $question)
+                    <li>{{ $question->content }}</li>
+                @empty
+                    <li>No questions asked.</li>
+                @endforelse
+            </ul>
+
+            <a href="{{ route('communications.edit', $communication) }}" class="btn btn-warning">Edit</a>
+
+            <form action="{{ route('communications.destroy', $communication) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?');">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+
+            <a href="{{ route('communications.index') }}" class="btn btn-secondary">Back to List</a>
         </div>
     </div>
-
-    <!-- Orateurs -->
-    <h2 class="mb-4">Orateurs</h2>
-    @if ($communication->orateurs->isNotEmpty())
-        <div class="d-flex flex-wrap justify-content-start gap-4 mb-5">
-            @foreach ($communication->orateurs as $orateur)
-                <a href="{{ route('orateurs.show', $orateur->id) }}" class="text-decoration-none text-dark">
-                    <div class="text-center">
-                        <img
-                            src="{{ $orateur->photo ? asset('storage/' . $orateur->photo) : asset('storage/images/avatar2.jpg') }}"
-                            alt="{{ $orateur->nom_complet }}"
-                            class="rounded-circle mb-2"
-                            style="width: 100px; height: 100px; object-fit: cover; border: 2px solid #ddd;">
-                        <p class="mb-0">{{ $orateur->nom_complet }}</p>
-                    </div>
-                </a>
-            @endforeach
-        </div>
-    @else
-        <p class="text-muted">Aucun orateur pour cette communication.</p>
-    @endif
-
-    <!-- Questions traitées -->
-    <h2 class="mb-4">Questions traitées</h2>
-    @if ($communication->questions->isNotEmpty())
-        <div class="row">
-            @foreach ($communication->questions as $question)
-                <div class="col-md-6">
-                    <div class="card mb-4 shadow-sm">
-                        <div class="card-body">
-                            <p><strong>Question :</strong> {{ $question->contenu }}</p>
-                            <p><strong>Réponse :</strong> {{ $question->reponse ?? 'Pas encore de réponse' }}</p>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    @else
-        <p class="text-muted">Aucune question traitée pour cette communication.</p>
-    @endif
 </div>
 @endsection

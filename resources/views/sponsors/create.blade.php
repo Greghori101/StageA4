@@ -1,50 +1,48 @@
 @extends('base')
 
+@section('title', 'Ajouter un Sponsor')
+
 @section('content')
-    <div class="container">
-        <h1>Ajouter un exposant</h1>
 
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+<div class="container mt-5">
+    <h1>Ajouter un Sponsor</h1>
 
-        <form action="{{ route('sponsors.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-            <div class="form-group">
-                <label for="nom">Nom de l'exposant</label>
-                <input type="text" id="nom" name="nom" class="form-control" value="{{ old('nom') }}" required>
-            </div>
+    <form method="POST" action="{{ route('sponsors.store') }}" enctype="multipart/form-data">
+        @csrf
 
-            <div class="form-group">
-                <label for="category">Catégorie</label>
-                <select id="category" name="category" class="form-control">
-                    @include('components.category-options', ['category' => old('category')])
-                </select>
-            </div>
+        <div class="mb-3">
+            <label for="name" class="form-label">Nom du Sponsor</label>
+            <input type="text" id="name" name="name" class="form-control" value="{{ old('name') }}" required>
+        </div>
 
-            <div class="form-group">
-                <label for="description">Description</label>
-                <textarea id="description" name="description" class="form-control">{{ old('description') }}</textarea>
-            </div>
+        <div class="mb-3">
+            <label for="category" class="form-label">Catégorie</label>
+            <input type="text" id="category" name="category" class="form-control" value="{{ old('category') }}">
+        </div>
 
-            <div class="form-group">
-                <label for="logo">Logo</label>
-                <input type="file" id="logo" name="logo" class="form-control">
-            </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea id="description" name="description" class="form-control">{{ old('description') }}</textarea>
+        </div>
 
-            <div class="form-group">
-                <label for="fichier">Fichiers</label>
-                <input type="file" id="fichier" name="fichier[]" class="form-control" multiple>
-            </div>
+        <div class="mb-3">
+            <label for="logo" class="form-label">Logo</label>
+            <input type="file" id="logo" name="logo" class="form-control">
+        </div>
 
-            <button type="submit" class="btn btn-primary mt-3">Créer</button>
-        </form>
-    </div>
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+        <a href="{{ route('sponsors.index') }}" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
+
 @endsection

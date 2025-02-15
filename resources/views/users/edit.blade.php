@@ -1,0 +1,74 @@
+@extends('base')
+
+@section('title', 'Modifier Utilisateur')
+
+@section('content')
+
+<div class="container mt-5">
+    <h1>Modifier Utilisateur</h1>
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form action="{{ route('users.update', $user->id) }}" method="POST">
+        @csrf
+        @method('PUT')
+
+        <div class="mb-3">
+            <label for="full_name" class="form-label">Nom Complet</label>
+            <input type="text" name="full_name" id="full_name" class="form-control" value="{{ old('full_name', $user->full_name) }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="nickname" class="form-label">Surnom</label>
+            <input type="text" name="nickname" id="nickname" class="form-control" value="{{ old('nickname', $user->nickname) }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" name="email" id="email" class="form-control" value="{{ old('email', $user->email) }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Mot de passe (Laissez vide pour ne pas changer)</label>
+            <input type="password" name="password" id="password" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label for="password_confirmation" class="form-label">Confirmer le mot de passe</label>
+            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label for="institution" class="form-label">Institution</label>
+            <input type="text" name="institution" id="institution" class="form-control" value="{{ old('institution', $user->institution) }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="address" class="form-label">Adresse</label>
+            <input type="text" name="address" id="address" class="form-control" value="{{ old('address', $user->address) }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="state" class="form-label">État</label>
+            <input type="text" name="state" id="state" class="form-control" value="{{ old('state', $user->state) }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="country" class="form-label">Pays</label>
+            <input type="text" name="country" id="country" class="form-control" value="{{ old('country', $user->country) }}">
+        </div>
+
+        <button type="submit" class="btn btn-success">Mettre à Jour</button>
+        <a href="{{ route('users.index') }}" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
+
+@endsection

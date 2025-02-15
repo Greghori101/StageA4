@@ -8,21 +8,16 @@ use Illuminate\Http\Request;
 class SpeakerController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the speakers.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $search = $request->input('search');
-
-        $speakers = Speaker::when($search, function ($query, $search) {
-            return $query->where('full_name', 'like', "%{$search}%");
-        })->get();
-
-        return view('speakers.index', compact('speakers', 'search'));
+        $speakers = Speaker::all();
+        return view('speakers.index', compact('speakers'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new speaker.
      */
     public function create()
     {
@@ -30,76 +25,68 @@ class SpeakerController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created speaker in storage.
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'biography' => 'nullable|string',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+            'avatar' => 'nullable|image|max:2048',
         ]);
 
-        $speaker = Speaker::create([
-            'full_name' => $validated['full_name'],
-            'biography' => $validated['biography'],
-        ]);
+        $speaker = Speaker::create($validated);
 
-        if ($request->hasFile('photo')) {
-            $speaker->addMedia($request->file('photo'))->toMediaCollection('photos');
+        if ($request->hasFile('avatar')) {
+            $speaker->addMediaFromRequest('avatar')->toMediaCollection('photo');
         }
 
         return redirect()->route('speakers.index')->with('success', 'Speaker created successfully.');
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified speaker.
      */
-    public function show($id)
+    public function show(Speaker $speaker)
     {
-        $speaker = Speaker::with('communications')->findOrFail($id);
-
         return view('speakers.show', compact('speaker'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified speaker.
      */
-    public function edit(string $id)
+    public function edit(Speaker $speaker)
     {
-        $speaker = Speaker::findOrFail($id);
         return view('speakers.edit', compact('speaker'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified speaker in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Speaker $speaker)
     {
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'biography' => 'nullable|string',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+            'avatar' => 'nullable|image|max:2048',
         ]);
 
-        $speaker = Speaker::findOrFail($id);
         $speaker->update($validated);
 
-        if ($request->hasFile('photo')) {
-            $speaker->clearMediaCollection('photos');
-            $speaker->addMedia($request->file('photo'))->toMediaCollection('photos');
+        if ($request->hasFile('avatar')) {
+            $speaker->clearMediaCollection('photo');
+            $speaker->addMediaFromRequest('avatar')->toMediaCollection('photo');
         }
 
         return redirect()->route('speakers.index')->with('success', 'Speaker updated successfully.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified speaker from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Speaker $speaker)
     {
-        $speaker = Speaker::findOrFail($id);
-        $speaker->clearMediaCollection('photos');
+        $speaker->clearMediaCollection('photo');
         $speaker->delete();
 
         return redirect()->route('speakers.index')->with('success', 'Speaker deleted successfully.');

@@ -7,34 +7,33 @@
 <div class="container mt-5">
     <h1>Gestion des Utilisateurs</h1>
 
-    <!-- Message de succès si un utilisateur a été ajouté ou mis à jour -->
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
     @endif
 
-    <!-- Formulaire de recherche -->
-    <form method="GET" action="{{ route('admin.users.index') }}" class="mb-3">
+    <form method="GET" action="{{ route('users.index') }}" class="mb-3">
         <div class="input-group">
-            <input type="text" name="search" class="form-control" placeholder="Rechercher par nom, email ou rôle" value="{{ request()->query('search') }}">
+            <input type="text" name="search" class="form-control" placeholder="Rechercher par nom ou email" value="{{ request()->query('search') }}">
             <button class="btn btn-primary" type="submit">
                 <i class="fas fa-search"></i> Rechercher
             </button>
         </div>
     </form>
 
-    <!-- Bouton pour ajouter un nouvel utilisateur -->
-    <a href="{{ route('admin.users.create') }}" class="btn btn-primary mb-3">Ajouter un utilisateur</a>
+    <a href="{{ route('users.create') }}" class="btn btn-primary mb-3">Ajouter un utilisateur</a>
 
-    <!-- Table des utilisateurs -->
     <table class="table table-bordered">
         <thead>
             <tr>
                 <th>#</th>
                 <th>Nom complet</th>
                 <th>Email</th>
-                <th>Rôle</th>
+                <th>Institution</th>
+                <th>Adresse</th>
+                <th>État</th>
+                <th>Pays</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -42,15 +41,16 @@
             @foreach ($users as $user)
                 <tr>
                     <td>{{ $user->id }}</td>
-                    <td>{{ $user->nom_complet }}</td>
+                    <td>{{ $user->full_name }}</td>
                     <td>{{ $user->email }}</td>
-                    <td>{{ $user->role }}</td>
+                    <td>{{ $user->institution ?? 'N/A' }}</td>
+                    <td>{{ $user->address ?? 'N/A' }}</td>
+                    <td>{{ $user->state }}</td>
+                    <td>{{ $user->country }}</td>
                     <td>
-                        <!-- Lien vers la page d'édition de l'utilisateur -->
-                        <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-warning btn-sm">Modifier</a>
+                        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">Modifier</a>
 
-                        <!-- Formulaire pour supprimer un utilisateur -->
-                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" style="display:inline-block;">
+                        <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline-block;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')">Supprimer</button>
@@ -60,6 +60,10 @@
             @endforeach
         </tbody>
     </table>
+
+    <div class="mt-3">
+        {{ $users->links() }}
+    </div>
 </div>
 
 @endsection

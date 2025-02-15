@@ -1,7 +1,7 @@
 <head>
     <style>
         .dropdown-toggle-text {
-            color: #ff5733; /* Remplacez cette couleur par celle de votre choix */
+            color: #ff5733; /* Couleur personnalisée */
         }
     </style>
 </head>
@@ -14,28 +14,25 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- Titre de la navbar (au centre) -->
+        <!-- Titre de la navbar (centré) -->
         <div class="text-center flex-grow-1">
             <a class="navbar-brand fw-bold text-uppercase" href="{{ route('home') }}" style="font-size: 1.8rem; letter-spacing: 1px; color: #e0e0e0;">
                 {{ config('app.name') }}
             </a>
         </div>
 
-        <!-- Bouton Se connecter / Se déconnecter (Fixé en haut à droite) -->
+        <!-- Authentification -->
         <div class="ms-auto d-flex align-items-center">
             @guest
-            <a href="{{ route('login') }}" class="btn btn-outline-primary">Se connecter</a>
-            @endguest
-
-            @auth
+                <a href="{{ route('login') }}" class="btn btn-outline-primary">Se connecter</a>
+            @else
                 <span class="me-3">Bonjour,</span>
 
-                <!-- Dropdown pour l'utilisateur connecté -->
+                <!-- Dropdown utilisateur -->
                 <div class="dropdown">
                     <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="dropdown-toggle-text">{{ Auth::user()->surnom ?: Auth::user()->name }}</span>
                     </button>
-                    <!-- Ajout de la classe "dropdown-menu-end" pour inverser le sens du dropdown -->
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                         <li>
                             <form action="{{ route('logout') }}" method="POST">
@@ -45,28 +42,22 @@
                         </li>
                     </ul>
                 </div>
-            @endauth
+            @endguest
         </div>
     </div>
 
-    <!-- Menu de navigation (collapsible) -->
+    <!-- Menu principal -->
     <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('sessis.index') }}">Programme</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('orateurs.index') }}">Orateurs</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('salles.index') }}">Salles</a>
-            </li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('program_sessions.index') }}">Programme</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('speakers.index') }}">Orateurs</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('rooms.index') }}">Salles</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('sponsors.index') }}">Exposants</a></li>
 
-            <!-- Lien Gérer les utilisateurs visible seulement pour les admins -->
             @auth
-                @if(Auth::user()->role === 'admin')
+                @if(Auth::user()->hasRole('admin'))  <!-- Vérification du rôle avec Spatie -->
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.users.index') }}">Gérer les utilisateurs</a>
+                        <a class="nav-link" href="{{ route('users.index') }}">Gérer les utilisateurs</a>
                     </li>
                 @endif
             @endauth
@@ -86,7 +77,7 @@
     </div>
 
     <div class="col text-center">
-        <a href="{{ route('sessis.index') }}" class="navbar-link {{ request()->routeIs('sessis.index') ? 'active' : '' }}">
+        <a href="{{ route('program_sessions.index') }}" class="navbar-link {{ request()->routeIs('program_sessions.index') ? 'active' : '' }}">
             <div class="navbar-item">
                 <i class="fas fa-calendar-alt"></i>
                 <span>Programme</span>
@@ -113,7 +104,7 @@
     </div>
 
     <div class="col text-center">
-        <a href="#" class="navbar-link {{ request()->routeIs('favoris') ? 'active' : '' }}">
+        <a href="{{ route('favorites.index') }}" class="navbar-link {{ request()->routeIs('favorites.index') ? 'active' : '' }}">
             <div class="navbar-item">
                 <i class="fas fa-heart"></i>
                 <span>Favoris</span>

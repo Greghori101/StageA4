@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Route;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,7 +23,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Register the middleware alias if it's not in RouteServiceProvider
-        Route::aliasMiddleware('role', \App\Http\Middleware\CheckRole::class);
     }
 }

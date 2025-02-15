@@ -7,58 +7,68 @@ use Illuminate\Http\Request;
 
 class RoomController extends Controller
 {
+    /**
+     * Display a listing of the rooms.
+     */
     public function index()
     {
-        $rooms = Room::with('communications')->get();
+        $rooms = Room::all();
         return view('rooms.index', compact('rooms'));
     }
 
+    /**
+     * Show the form for creating a new room.
+     */
     public function create()
     {
         return view('rooms.create');
     }
 
+    /**
+     * Store a newly created room in storage.
+     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
-            'capacity' => 'required|integer|min:1',
+            'capacity' => 'nullable|integer',
             'description' => 'nullable|string',
         ]);
 
-        Room::create($validated);
+        Room::create($request->all());
 
         return redirect()->route('rooms.index')->with('success', 'Room created successfully.');
     }
 
-    public function show(string $id)
+    /**
+     * Show the form for editing the specified room.
+     */
+    public function edit(Room $room)
     {
-        //
-    }
-
-    public function edit(string $id)
-    {
-        $room = Room::findOrFail($id);
         return view('rooms.edit', compact('room'));
     }
 
-    public function update(Request $request, string $id)
+    /**
+     * Update the specified room in storage.
+     */
+    public function update(Request $request, Room $room)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
-            'capacity' => 'required|integer|min:1',
+            'capacity' => 'nullable|integer',
             'description' => 'nullable|string',
         ]);
 
-        $room = Room::findOrFail($id);
-        $room->update($validated);
+        $room->update($request->all());
 
         return redirect()->route('rooms.index')->with('success', 'Room updated successfully.');
     }
 
-    public function destroy(string $id)
+    /**
+     * Remove the specified room from storage.
+     */
+    public function destroy(Room $room)
     {
-        $room = Room::findOrFail($id);
         $room->delete();
 
         return redirect()->route('rooms.index')->with('success', 'Room deleted successfully.');

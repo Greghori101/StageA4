@@ -2,139 +2,99 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Communication;
 use App\Models\Question;
+use App\Models\User;
+use App\Models\Communication;
+use App\Models\Speaker;
 use Illuminate\Http\Request;
 
 class QuestionController extends Controller
 {
+    /**
+     * Display a listing of the questions.
+     */
     public function index()
     {
-        $pendingCount = Question::where('status', 'pending')->count();
-        $approvedCount = Question::where('status', 'approved')->count();
-        $processedCount = Question::where('status', 'processed')->count();
-        $rejectedCount = Question::where('status', 'rejected')->count();
-
-        $pendingQuestions = Question::where('status', 'pending')->with(['communication', 'speaker'])->get();
-        $approvedQuestions = Question::where('status', 'approved')->with(['communication', 'speaker'])->get();
-        $processedQuestions = Question::where('status', 'processed')->with(['communication', 'speaker'])->get();
-        $rejectedQuestions = Question::where('status', 'rejected')->with(['communication', 'speaker'])->get();
-
-        return view('questions.index', compact(
-            'pendingCount',
-            'approvedCount',
-            'processedCount',
-            'rejectedCount',
-            'pendingQuestions',
-            'approvedQuestions',
-            'processedQuestions',
-            'rejectedQuestions'
-        ));
+        $questions = Question::latest()->paginate(10);
+        return view('questions.index', compact('questions'));
     }
 
-    public function create(Request $request)
+    /**
+     * Show the form for creating a new question.
+     */
+    public function create()
     {
+        $users = User::all();
         $communications = Communication::all();
-        $speakers = collect();
+        $speakers = Speaker::all();
 
-        if ($request->filled('communication_id')) {
-            $communication = Communication::find($request->communication_id);
-            if ($communication) {
-                $speakers = $communication->speakers;
-            }
-        }
-
-        return view('questions.create', compact('communications', 'speakers'));
+        return view('questions.create', compact('users', 'communications', 'speakers'));
     }
 
+    /**
+     * Store a newly created question in the database.
+     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'content' => 'required|string',
+            'answer' => 'nullable|string',
+            'user_id' => 'required|exists:users,id',
             'communication_id' => 'required|exists:communications,id',
             'speaker_id' => 'nullable|exists:speakers,id',
+            'status' => 'required|in:pending,answered,rejected',
         ]);
 
-        Question::create($validated);
+        Question::create($request->all());
 
-        return redirect()->route('questions.create')->with('success', 'Your question has been submitted.');
+        return redirect()->route('questions.index')->with('success', 'Question created successfully.');
     }
 
-    public function getSpeakers($communicationId)
+    /**
+     * Display the specified question.
+     */
+    public function show(Question $question)
     {
-        $communication = Communication::with('speakers')->find($communicationId);
-
-        return $communication ? response()->json($communication->speakers) : response()->json([], 404);
+        return view('questions.show', compact('question'));
     }
 
-    public function showCommunicationWithSpeakers($id)
+    /**
+     * Show the form for editing the specified question.
+     */
+    public function edit(Question $question)
     {
-        $communication = Communication::with('speakers')->find($id);
+        $users = User::all();
+        $communications = Communication::all();
+        $speakers = Speaker::all();
 
-        if (!$communication) {
-            return redirect()->back()->with('error', 'Communication not found.');
-        }
-
-        return view('communications.show', compact('communication'));
+        return view('questions.edit', compact('question', 'users', 'communications', 'speakers'));
     }
 
-    public function approve($id)
+    /**
+     * Update the specified question in the database.
+     */
+    public function update(Request $request, Question $question)
     {
-        $question = Question::findOrFail($id);
-        $question->update(['status' => 'approved']);
-
-        return redirect()->route('questions.index')->with('success', 'Question approved successfully.');
-    }
-
-    public function reject($id)
-    {
-        $question = Question::findOrFail($id);
-        $question->update(['status' => 'rejected']);
-
-        return redirect()->route('questions.index')->with('success', 'Question rejected successfully.');
-    }
-
-    public function process($id)
-    {
-        $question = Question::where('id', $id)->where('status', 'approved')->firstOrFail();
-
-        $question->update([
-            'status' => 'processed',
-            'response' => 'Answered verbally by the speaker.',
-        ]);
-
-        return redirect()->route('questions.index')->with('success', 'The question has been processed, and the response has been recorded.');
-    }
-
-    public function updateRejected(Request $request, $id)
-    {
-        $question = Question::where('id', $id)->where('status', 'rejected')->firstOrFail();
-
-        $validated = $request->validate([
+        $request->validate([
             'content' => 'required|string',
+            'answer' => 'nullable|string',
+            'user_id' => 'required|exists:users,id',
+            'communication_id' => 'required|exists:communications,id',
+            'speaker_id' => 'nullable|exists:speakers,id',
+            'status' => 'required|in:pending,answered,rejected',
         ]);
 
-        $question->update([
-            'content' => $validated['content'],
-            'status' => 'approved',
-        ]);
+        $question->update($request->all());
 
-        return redirect()->route('questions.index')->with('success', 'The question has been updated and approved.');
+        return redirect()->route('questions.index')->with('success', 'Question updated successfully.');
     }
 
-    public function respond(Request $request, $id)
+    /**
+     * Remove the specified question from the database.
+     */
+    public function destroy(Question $question)
     {
-        $question = Question::where('id', $id)->where('status', 'approved')->firstOrFail();
-
-        $validated = $request->validate([
-            'response' => 'required|string',
-        ]);
-
-        $question->update([
-            'response' => $validated['response'],
-            'status' => 'processed',
-        ]);
-
-        return redirect()->route('questions.index')->with('success', 'The question has been processed, and the response has been recorded.');
+        $question->delete();
+        return redirect()->route('questions.index')->with('success', 'Question deleted successfully.');
     }
 }
