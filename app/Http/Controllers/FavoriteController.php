@@ -39,7 +39,35 @@ class FavoriteController extends Controller
 
         Favorite::create($request->all());
 
-        return redirect()->route('favorites.index')->with('success', 'Favori ajouté avec succès.');
+        return redirect()->back()->with('success', 'Favori ajouté avec succès.');
+    }
+    public function toggle($modelType, $modelId)
+    {
+        $user = auth()->user();
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'You must be logged in to favorite items.');
+        }
+
+        // Check if the favorite already exists
+        $favorite = Favorite::where('user_id', $user->id)
+            ->where('model_type', $modelType)
+            ->where('model_id', $modelId)
+            ->first();
+
+        if ($favorite) {
+            // If exists, remove it (unfavorite)
+            $favorite->delete();
+            return redirect()->back()->with('success', 'Removed from favorites.');
+        } else {
+            // Otherwise, add to favorites
+            Favorite::create([
+                'user_id' => $user->id,
+                'model_type' => $modelType,
+                'model_id' => $modelId,
+            ]);
+            return redirect()->back()->with('success', 'Added to favorites.');
+        }
     }
 
     /**
@@ -84,4 +112,3 @@ class FavoriteController extends Controller
         return redirect()->route('favorites.index')->with('success', 'Favori supprimé avec succès.');
     }
 }
-

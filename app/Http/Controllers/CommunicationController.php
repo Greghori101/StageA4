@@ -27,12 +27,11 @@ class CommunicationController extends Controller
     {
         $programSessions = ProgramSession::all();
         $rooms = Room::all();
-        $speakers = Speaker::all(); // Assurez-vous que cette ligne est bien présente
+        $speakers = Speaker::all();
         $sponsors = Sponsor::all();
 
         return view('communications.create', compact('programSessions', 'rooms', 'speakers', 'sponsors'));
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -55,11 +54,21 @@ class CommunicationController extends Controller
         ]);
 
         $communication = Communication::create($validated);
-
         $communication->speakers()->sync($request->speakers ?? []);
         $communication->sponsors()->sync($request->sponsors ?? []);
 
         return redirect()->route('communications.index')->with('success', 'Communication créée avec succès.');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Communication $communication)
+    {
+        // Load relationships to ensure all data is available in the view
+        $communication->load(['programSession', 'room', 'speakers', 'sponsors', 'questions']);
+
+        return view('communications.show', compact('communication'));
     }
 
     /**
@@ -96,7 +105,6 @@ class CommunicationController extends Controller
         ]);
 
         $communication->update($validated);
-
         $communication->speakers()->sync($request->speakers ?? []);
         $communication->sponsors()->sync($request->sponsors ?? []);
 
