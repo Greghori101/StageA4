@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SponsorController;
@@ -36,7 +37,17 @@ Route::resource('speakers', SpeakerController::class);
 Route::resource('rooms', RoomController::class);
 
 // Questions
-Route::resource('questions', QuestionController::class);
+Route::prefix('questions')->name('questions.')->group(function () {
+    Route::get('/', [QuestionController::class, 'index'])->name('index'); // View all questions
+    Route::get('/create', [QuestionController::class, 'create'])->name('create'); // Show create form
+    Route::post('/store', [QuestionController::class, 'store'])->name('store'); // Store new question
+    Route::post('/{id}/validate', [QuestionController::class, 'validateQuestion'])->name('validate'); // Validate question
+    Route::post('/{id}/reject', [QuestionController::class, 'reject'])->name('reject'); // Reject question
+    Route::post('/{id}/process', [QuestionController::class, 'process'])->name('process'); // Process question (answered verbally)
+    Route::put('/{id}/update-rejected', [QuestionController::class, 'updateRejected'])->name('update-rejected'); // Edit rejected question
+    Route::post('/{id}/respond', [QuestionController::class, 'respond'])->name('respond'); // Provide an answer to a validated question
+});
+
 
 // Program Sessions
 Route::resource('program_sessions', ProgramSessionController::class);
@@ -48,6 +59,7 @@ Route::resource('moderators', ModeratorController::class);
 Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
 Route::post('/favorites', [FavoriteController::class, 'store'])->name('favorites.store');
 Route::delete('/favorites/{favorite}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
+Route::get('/favorites/toggle/{modelType}/{modelId}', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
 
 // Communications
 Route::resource('communications', CommunicationController::class);
