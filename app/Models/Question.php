@@ -19,6 +19,7 @@ class Question extends Model
         'answer',
         'communication_id',
         'speaker_id',
+        'user_id',
         'status',
     ];
 
