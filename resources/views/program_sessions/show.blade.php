@@ -17,15 +17,47 @@
 
             <h5>Communications liées</h5>
             @if ($programSession->communications->isNotEmpty())
-                <ul>
+                <div class="row">
                     @foreach ($programSession->communications as $communication)
-                        <li>
-                            <a href="{{ route('communications.show', $communication) }}">
-                                {{ $communication->title }}
-                            </a> - {{ $communication->date }} ({{ $communication->start_time }} - {{ $communication->end_time }})
-                        </li>
+                        <div class="col-md-4">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="{{ route('communications.show', $communication) }}">
+                                            {{ $communication->title }}
+                                        </a>
+                                    </h5>
+                                    <p><strong>Description:</strong> {{ $communication->description }}</p>
+                                    <p><strong>Date:</strong> {{ $communication->date }}</p>
+                                    <p><strong>Heure:</strong> {{ $communication->start_time }} - {{ $communication->end_time }}</p>
+                                    <p><strong>Type:</strong> {{ $communication->type }}</p>
+
+                                    @if ($communication->room)
+                                        <p><strong>Salle:</strong> {{ $communication->room->name }}</p>
+                                    @endif
+
+                                    @if ($communication->speakers->isNotEmpty())
+                                        <p><strong>Intervenants:</strong>
+                                            {{ $communication->speakers->pluck('name')->join(', ') }}
+                                        </p>
+                                    @endif
+
+                                    @if ($communication->sponsors->isNotEmpty())
+                                        <p><strong>Sponsors:</strong>
+                                            {{ $communication->sponsors->pluck('name')->join(', ') }}
+                                        </p>
+                                    @endif
+
+                                    <p><strong>Questions associées:</strong> {{ $communication->questions->count() }}</p>
+
+                                    <a href="{{ route('communications.show', $communication) }}" class="btn btn-info btn-sm">
+                                        Voir plus
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     @endforeach
-                </ul>
+                </div>
             @else
                 <p>Aucune communication liée à cette session.</p>
             @endif

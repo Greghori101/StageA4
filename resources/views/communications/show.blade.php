@@ -16,30 +16,64 @@
 
             <hr>
 
+            <!-- Program Session -->
             <h5>Session du Programme</h5>
-            <p>{{ $communication->programSession->name ?? 'Non attribuée' }}</p>
+            @if ($communication->programSession)
+                <p>
+                    <a href="{{ route('program_sessions.show', $communication->programSession) }}">
+                        {{ $communication->programSession->name }}
+                    </a>
+                </p>
+            @else
+                <p>Non attribuée</p>
+            @endif
 
+            <!-- Room -->
             <h5>Salle</h5>
-            <p>{{ $communication->room->name ?? 'Non attribuée' }}</p>
+            @if ($communication->room)
+                <p>
+                    <a href="{{ route('rooms.show', $communication->room) }}">
+                        {{ $communication->room->name }}
+                    </a>
+                </p>
+            @else
+                <p>Non attribuée</p>
+            @endif
 
+            <hr>
+
+            <!-- Speakers -->
             <h5>Intervenants</h5>
             @if ($communication->speakers->isNotEmpty())
-                <ul>
+                <div class="row">
                     @foreach ($communication->speakers as $speaker)
-                        <li>{{ $speaker->name }}</li>
+                        <div class="col-md-4 text-center">
+                            <a href="{{ route('speakers.show', $speaker) }}">
+                                <img src="{{ $speaker->avatar->original_url }}" alt="{{ $speaker->full_name }}" class="rounded-circle img-fluid" style="width: 80px; height: 80px;">
+                                <p>{{ $speaker->full_name }}</p>
+                            </a>
+                        </div>
                     @endforeach
-                </ul>
+                </div>
             @else
                 <p>Aucun intervenant</p>
             @endif
 
+            <hr>
+
+            <!-- Sponsors -->
             <h5>Sponsors</h5>
             @if ($communication->sponsors->isNotEmpty())
-                <ul>
+                <div class="row">
                     @foreach ($communication->sponsors as $sponsor)
-                        <li>{{ $sponsor->name }}</li>
+                        <div class="col-md-4 text-center">
+                            <a href="{{ route('sponsors.show', $sponsor) }}">
+                                <img src="{{ $sponsor->logo->original_url }}" alt="{{ $sponsor->name }}" class="img-fluid" style="max-height: 60px;">
+                                <p>{{ $sponsor->name }}</p>
+                            </a>
+                        </div>
                     @endforeach
-                </ul>
+                </div>
             @else
                 <p>Aucun sponsor</p>
             @endif
