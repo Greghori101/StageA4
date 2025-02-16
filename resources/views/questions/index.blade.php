@@ -34,34 +34,36 @@
     <div class="p-4 mb-4" style="background-color: #F2A341; border-radius: 10px;">
         <h5 class="text-white">Pending Questions:</h5>
         @if($pending_questions->isEmpty())
-            <p>No pending questions at the moment...</p>
+        <p>No pending questions at the moment...</p>
         @else
-            <div class="row">
-                @foreach($pending_questions as $question)
-                    <div class="col-md-4 mb-3">
-                        <div class="card shadow-sm h-100">
-                            <div class="card-body">
-                                <strong>{{ $question->content }}</strong>
-                                <br>
-                                <small>Communication: {{ $question->communication->title ?? 'Not specified' }}</small>
-                                @if ($question->speaker)
-                                    <br><small>Speaker: {{ $question->speaker->name }}</small>
-                                @endif
-                                <div class="mt-2">
-                                    <form action="{{ route('questions.validate', $question->id) }}" method="POST" style="display: inline;">
-                                        @csrf
-                                        <button type="submit" class="btn btn-success btn-sm">Validate</button>
-                                    </form>
-                                    <form action="{{ route('questions.reject', $question->id) }}" method="POST" style="display: inline;">
-                                        @csrf
-                                        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
-                                    </form>
-                                </div>
-                            </div>
+        <div class="row">
+            @foreach($pending_questions as $question)
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <strong>{{ $question->content }}</strong>
+                        <br>
+                        <small>Communication: {{ $question->communication->title ?? 'Not specified' }}</small>
+                        @if ($question->speaker)
+                        <br><small>Speaker: {{ $question->speaker->name }}</small>
+                        @endif
+                        <div class="mt-2">
+                            <form action="{{ route('questions.validate', $question->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                <button type="submit" class="btn btn-success btn-sm">Validate</button>
+                            </form>
+                            <form action="{{ route('questions.reject', $question->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                            </form>
                         </div>
+                        <x-favorite-button modelType="App\Models\Question" :modelId="$question->id" />
+
                     </div>
-                @endforeach
+                </div>
             </div>
+            @endforeach
+        </div>
         @endif
     </div>
 
@@ -69,39 +71,40 @@
     <div class="p-4 mb-4" style="background-color: #56A6B4; border-radius: 10px;">
         <h5 class="text-white">Validated Questions:</h5>
         @if($validated_questions->isEmpty())
-            <p>No validated questions at the moment...</p>
+        <p>No validated questions at the moment...</p>
         @else
-            <div class="row">
-                @foreach($validated_questions as $question)
-                    <div class="col-md-4 mb-3">
-                        <div class="card shadow-sm h-100">
-                            <div class="card-body">
-                                <strong>{{ $question->content }}</strong>
-                                <br>
-                                <small>Communication: {{ $question->communication->title ?? 'Not specified' }}</small>
-                                @if ($question->speaker)
-                                    <br><small>Speaker: {{ $question->speaker->name }}</small>
-                                @endif
-                                <div class="mt-2">
-                                    <form action="{{ route('questions.process', $question->id) }}" method="POST" style="display: inline;">
-                                        @csrf
-                                        <button type="submit" class="btn btn-success btn-sm">Mark as Processed</button>
-                                    </form>
-                                    <form action="{{ route('questions.respond', $question->id) }}" method="POST" style="display: inline;">
-                                        @csrf
-                                        <input type="text" name="answer" class="form-control d-inline w-75" placeholder="Provide an answer">
-                                        <button type="submit" class="btn btn-warning btn-sm">Respond</button>
-                                    </form>
-                                    <form action="{{ route('questions.reject', $question->id) }}" method="POST" style="display: inline;">
-                                        @csrf
-                                        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
-                                    </form>
-                                </div>
-                            </div>
+        <div class="row">
+            @foreach($validated_questions as $question)
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <strong>{{ $question->content }}</strong>
+                        <br>
+                        <small>Communication: {{ $question->communication->title ?? 'Not specified' }}</small>
+                        @if ($question->speaker)
+                        <br><small>Speaker: {{ $question->speaker->name }}</small>
+                        @endif
+                        <div class="mt-2">
+                            <form action="{{ route('questions.process', $question->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                <button type="submit" class="btn btn-success btn-sm">Mark as Processed</button>
+                            </form>
+                            <form action="{{ route('questions.respond', $question->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                <input type="text" name="answer" class="form-control d-inline w-75" placeholder="Provide an answer">
+                                <button type="submit" class="btn btn-warning btn-sm">Respond</button>
+                            </form>
+                            <form action="{{ route('questions.reject', $question->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                            </form>
+                            <x-favorite-button modelType="App\Models\Question" :modelId="$question->id" />
                         </div>
                     </div>
-                @endforeach
+                </div>
             </div>
+            @endforeach
+        </div>
         @endif
     </div>
 
@@ -109,28 +112,29 @@
     <div class="p-4 mb-4" style="background-color: #4CAF50; border-radius: 10px;">
         <h5 class="text-white">Processed Questions:</h5>
         @if($processed_questions->isEmpty())
-            <p>No processed questions at the moment...</p>
+        <p>No processed questions at the moment...</p>
         @else
-            <div class="row">
-                @foreach($processed_questions as $question)
-                    <div class="col-md-4 mb-3">
-                        <div class="card shadow-sm h-100">
-                            <div class="card-body">
-                                <strong>{{ $question->content }}</strong>
-                                <br>
-                                <small>Communication: {{ $question->communication->title ?? 'Not specified' }}</small>
-                                @if ($question->speaker)
-                                    <br><small>Speaker: {{ $question->speaker->name }}</small>
-                                @endif
-                                <div class="mt-3">
-                                    <strong>Answer:</strong>
-                                    <p>{{ $question->answer ?? 'No answer provided.' }}</p>
-                                </div>
-                            </div>
+        <div class="row">
+            @foreach($processed_questions as $question)
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <strong>{{ $question->content }}</strong>
+                        <br>
+                        <small>Communication: {{ $question->communication->title ?? 'Not specified' }}</small>
+                        @if ($question->speaker)
+                        <br><small>Speaker: {{ $question->speaker->name }}</small>
+                        @endif
+                        <div class="mt-3">
+                            <strong>Answer:</strong>
+                            <p>{{ $question->answer ?? 'No answer provided.' }}</p>
                         </div>
+                        <x-favorite-button modelType="App\Models\Question" :modelId="$question->id" />
                     </div>
-                @endforeach
+                </div>
             </div>
+            @endforeach
+        </div>
         @endif
     </div>
 
@@ -138,30 +142,31 @@
     <div class="p-4 mb-4" style="background-color: #E74C3C; border-radius: 10px;">
         <h5 class="text-white">Rejected Questions:</h5>
         @if($rejected_questions->isEmpty())
-            <p>No rejected questions at the moment...</p>
+        <p>No rejected questions at the moment...</p>
         @else
-            <div class="row">
-                @foreach($rejected_questions as $question)
-                    <div class="col-md-4 mb-3">
-                        <div class="card shadow-sm h-100">
-                            <div class="card-body">
-                                <form action="{{ route('questions.update-rejected', $question->id) }}" method="POST">
-                                    @csrf
-                                    <strong>Question:</strong>
-                                    <textarea name="content" class="form-control mb-2">{{ $question->content }}</textarea>
-                                    <small>Communication: {{ $question->communication->title ?? 'Not specified' }}</small>
-                                    @if ($question->speaker)
-                                        <br><small>Speaker: {{ $question->speaker->name }}</small>
-                                    @endif
-                                    <div class="mt-2">
-                                        <button type="submit" class="btn btn-success btn-sm">Validate After Update</button>
-                                    </div>
-                                </form>
+        <div class="row">
+            @foreach($rejected_questions as $question)
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <form action="{{ route('questions.update-rejected', $question->id) }}" method="POST">
+                            @csrf
+                            <strong>Question:</strong>
+                            <textarea name="content" class="form-control mb-2">{{ $question->content }}</textarea>
+                            <small>Communication: {{ $question->communication->title ?? 'Not specified' }}</small>
+                            @if ($question->speaker)
+                            <br><small>Speaker: {{ $question->speaker->name }}</small>
+                            @endif
+                            <div class="mt-2">
+                                <button type="submit" class="btn btn-success btn-sm">Validate After Update</button>
                             </div>
-                        </div>
+                        </form>
+                        <x-favorite-button modelType="App\Models\Question" :modelId="$question->id" />
                     </div>
-                @endforeach
+                </div>
             </div>
+            @endforeach
+        </div>
         @endif
     </div>
 </div>

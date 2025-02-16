@@ -13,9 +13,16 @@ class FavoriteController extends Controller
      */
     public function index()
     {
-        $favorites = Favorite::latest()->paginate(10);
+        $user = auth()->user();
+
+        // Get all the user's favorites and group them by model type
+        $favorites = Favorite::where('user_id', $user->id)
+            ->get()
+            ->groupBy('model_type');
+
         return view('favorites.index', compact('favorites'));
     }
+
 
     /**
      * Show the form for creating a new favorite.

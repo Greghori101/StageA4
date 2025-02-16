@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Favorite extends Model
 {
+    protected $fillable = [
+        'model_id',
+        'model_type',
+        'user_id',
+    ];
     //
     public function user()
     {

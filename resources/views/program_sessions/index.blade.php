@@ -9,9 +9,9 @@
 
     <!-- Message de succès -->
     @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
     @endif
 
     <!-- Formulaire de recherche -->
@@ -42,38 +42,39 @@
         </thead>
         <tbody>
             @foreach ($sessions as $session)
-                <tr>
-                    <td>{{ $session->id }}</td>
-                    <td>{{ $session->name }}</td>
-                    <td>{{ $session->date }}</td>
-                    <td>{{ $session->start_time }}</td>
-                    <td>{{ $session->end_time }}</td>
-                    <td>
-                        @if ($session->communications->isNotEmpty())
-                            <ul>
-                                @foreach ($session->communications as $communication)
-                                    <li>
-                                        <a href="{{ route('communications.show', $communication->id) }}">
-                                            {{ $communication->title }}
-                                        </a>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        @else
-                            <span class="text-muted">Aucune</span>
-                        @endif
-                    </td>
-                    <td>
-                        <a href="{{ route('program_sessions.show', $session->id) }}" class="btn btn-info btn-sm">Voir</a>
-                        <a href="{{ route('program_sessions.edit', $session->id) }}" class="btn btn-warning btn-sm">Modifier</a>
+            <tr>
+                <td>{{ $session->id }}</td>
+                <td>{{ $session->name }}</td>
+                <td>{{ $session->date }}</td>
+                <td>{{ $session->start_time }}</td>
+                <td>{{ $session->end_time }}</td>
+                <td>
+                    @if ($session->communications->isNotEmpty())
+                    <ul>
+                        @foreach ($session->communications as $communication)
+                        <li>
+                            <a href="{{ route('communications.show', $communication->id) }}">
+                                {{ $communication->title }}
+                            </a>
+                        </li>
+                        @endforeach
+                    </ul>
+                    @else
+                    <span class="text-muted">Aucune</span>
+                    @endif
+                </td>
+                <td>
+                    <x-favorite-button modelType="App\Models\ProgramSession" :modelId="$session->id" />
+                    <a href="{{ route('program_sessions.show', $session->id) }}" class="btn btn-info btn-sm">Voir</a>
+                    <a href="{{ route('program_sessions.edit', $session->id) }}" class="btn btn-warning btn-sm">Modifier</a>
 
-                        <form action="{{ route('program_sessions.destroy', $session->id) }}" method="POST" style="display:inline-block;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Supprimer cette session ?')">Supprimer</button>
-                        </form>
-                    </td>
-                </tr>
+                    <form action="{{ route('program_sessions.destroy', $session->id) }}" method="POST" style="display:inline-block;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Supprimer cette session ?')">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
             @endforeach
         </tbody>
     </table>

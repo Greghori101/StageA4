@@ -9,9 +9,9 @@
 
     <!-- Message de succès -->
     @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
     @endif
 
     <!-- Formulaire de recherche -->
@@ -41,30 +41,31 @@
         </thead>
         <tbody>
             @foreach ($sponsors as $sponsor)
-                <tr>
-                    <td>{{ $sponsor->id }}</td>
-                    <td>{{ $sponsor->name }}</td>
-                    <td>{{ $sponsor->category ?? 'N/A' }}</td>
-                    <td>{{ $sponsor->description ?? 'N/A' }}</td>
-                    <td>
-                        @if ($sponsor->logo)
-                            <img src="{{ $sponsor->logo->getUrl() }}" alt="Logo" width="50">
-                        @else
-                            <span>Aucun logo</span>
-                        @endif
-                    </td>
-                    <td>
-                        <!-- Lien pour modifier -->
-                        <a href="{{ route('sponsors.edit', $sponsor->id) }}" class="btn btn-warning btn-sm">Modifier</a>
+            <tr>
+                <td>{{ $sponsor->id }}</td>
+                <td>{{ $sponsor->name }}</td>
+                <td>{{ $sponsor->category ?? 'N/A' }}</td>
+                <td>{{ $sponsor->description ?? 'N/A' }}</td>
+                <td>
+                    @if ($sponsor->logo)
+                    <img src="{{ $sponsor->logo->getUrl() }}" alt="Logo" width="50">
+                    @else
+                    <span>Aucun logo</span>
+                    @endif
+                </td>
+                <td>
+                    <x-favorite-button modelType="App\Models\Sponsor" :modelId="$sponsor->id" />
+                    <!-- Lien pour modifier -->
+                    <a href="{{ route('sponsors.edit', $sponsor->id) }}" class="btn btn-warning btn-sm">Modifier</a>
 
-                        <!-- Formulaire pour supprimer -->
-                        <form action="{{ route('sponsors.destroy', $sponsor->id) }}" method="POST" style="display:inline-block;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Voulez-vous vraiment supprimer ce sponsor ?')">Supprimer</button>
-                        </form>
-                    </td>
-                </tr>
+                    <!-- Formulaire pour supprimer -->
+                    <form action="{{ route('sponsors.destroy', $sponsor->id) }}" method="POST" style="display:inline-block;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Voulez-vous vraiment supprimer ce sponsor ?')">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
             @endforeach
         </tbody>
     </table>
