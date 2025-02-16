@@ -50,6 +50,7 @@
     <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item"><a class="nav-link" href="{{ route('program_sessions.index') }}">Programme</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('moderators.index') }}">Moderateur</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('speakers.index') }}">Orateurs</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('rooms.index') }}">Salles</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('sponsors.index') }}">Exposants</a></li>
