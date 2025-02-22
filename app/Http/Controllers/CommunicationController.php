@@ -36,6 +36,7 @@ class CommunicationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -53,12 +54,23 @@ class CommunicationController extends Controller
             'sponsors.*' => 'exists:sponsors,id',
         ]);
 
+        // Ensure communication time is within the session time
+        if ($request->program_session_id) {
+            $session = ProgramSession::find($request->program_session_id);
+            if ($session && ($request->start_time < $session->start_time || $request->end_time > $session->end_time)) {
+                return redirect()->back()->withErrors(['time' => 'La communication doit respecter le temps de la session.']);
+            }
+        }
+
         $communication = Communication::create($validated);
         $communication->speakers()->sync($request->speakers ?? []);
         $communication->sponsors()->sync($request->sponsors ?? []);
 
-        return redirect()->route('communications.index')->with('success', 'Communication créée avec succès.');
+        return redirect()->route('program_sessions.index')->with('success', 'Communication créée avec succès.');
     }
+
+
+
 
     /**
      * Display the specified resource.
@@ -104,11 +116,19 @@ class CommunicationController extends Controller
             'sponsors.*' => 'exists:sponsors,id',
         ]);
 
+        // Ensure communication time is within the session time
+        if ($request->program_session_id) {
+            $session = ProgramSession::find($request->program_session_id);
+            if ($session && ($request->start_time < $session->start_time || $request->end_time > $session->end_time)) {
+                return redirect()->back()->withErrors(['time' => 'La communication doit respecter le temps de la session.']);
+            }
+        }
+
         $communication->update($validated);
         $communication->speakers()->sync($request->speakers ?? []);
         $communication->sponsors()->sync($request->sponsors ?? []);
 
-        return redirect()->route('communications.index')->with('success', 'Communication mise à jour avec succès.');
+        return redirect()->route('program_sessions.index')->with('success', 'Communication mise à jour avec succès.');
     }
 
     /**
@@ -117,6 +137,6 @@ class CommunicationController extends Controller
     public function destroy(Communication $communication)
     {
         $communication->delete();
-        return redirect()->route('communications.index')->with('success', 'Communication supprimée avec succès.');
+        return redirect()->route('program_sessions.index')->with('success', 'Communication supprimée avec succès.');
     }
 }

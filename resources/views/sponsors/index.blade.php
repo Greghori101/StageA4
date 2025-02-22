@@ -59,7 +59,6 @@
                     @if(auth()->check() && auth()->user()->can('create Favorite'))
                     <x-favorite-button modelType="App\Models\Sponsor" :modelId="$sponsor->id" />
                     @endif
-                    <a href="{{ route('sponsors.show', $sponsor->id) }}" class="btn btn-info btn-sm">{{ __('interface.view') }}</a>
 
                     @if(auth()->check() && auth()->user()->can('update Sponsor'))
                     <a href="{{ route('sponsors.edit', $sponsor->id) }}" class="btn btn-warning btn-sm">{{ __('interface.edit') }}</a>

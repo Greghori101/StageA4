@@ -9,13 +9,13 @@
 
     <!-- Message d'erreur -->
     @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
     @endif
 
     <!-- Formulaire de création -->
@@ -40,6 +40,18 @@
         <div class="mb-3">
             <label for="end_time" class="form-label">{{ __('interface.end_time') }}</label>
             <input type="time" name="end_time" class="form-control" value="{{ old('end_time') }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="users" class="form-label">{{ __('interface.moderators') }}</label>
+            <select class="form-select" id="users" name="users[]" multiple size="5">
+                @foreach($users as $user)
+                <option value="{{ $user->id }}" {{ collect(old('users', []))->contains($user->id) ? 'selected' : '' }}>
+                    {{ $user->full_name }}
+                </option>
+                @endforeach
+            </select>
+            <small class="text-muted">{{ __('interface.multi_select_hint') }}</small>
         </div>
 
         <button type="submit" class="btn btn-primary">{{ __('interface.create') }}</button>

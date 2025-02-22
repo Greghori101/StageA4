@@ -27,7 +27,13 @@
             </ul>
 
             <div class="text-center mt-3">
-                <a href="{{ route('profile.edit') }}" class="btn btn-primary">{{ __('interface.edit_profile') }}</a>
+                <!-- QR Code -->
+                <div>
+                    <p><strong>{{ __('interface.user_qr_code') }}:</strong></p>
+                    {!! \QrCode::size(150)->generate($user->id) !!}
+                </div>
+
+                <a href="{{ route('profile.edit') }}" class="btn btn-primary mt-3">{{ __('interface.edit_profile') }}</a>
             </div>
         </div>
     </div>

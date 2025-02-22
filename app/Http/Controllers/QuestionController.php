@@ -41,13 +41,6 @@ class QuestionController extends Controller
         $communications = Communication::all();
         $speakers = Speaker::all();
 
-        if ($request->has('communication_id') && $request->communication_id) {
-            $communication = Communication::find($request->communication_id);
-            if ($communication) {
-                $speakers = $communication->speakers;
-            }
-        }
-
         return view('questions.create', compact('communications', 'speakers'));
     }
 
@@ -61,7 +54,7 @@ class QuestionController extends Controller
 
         Question::create(array_merge($validated, ['status' => 'pending', 'user_id' => Auth::user()->id]));
 
-        return redirect()->route('questions.create')->with('success', 'Your question has been submitted.');
+        return redirect()->route('questions.index')->with('success', 'Your question has been submitted.');
     }
 
     public function validateQuestion($id)
@@ -143,5 +136,20 @@ class QuestionController extends Controller
         $question->save();
 
         return redirect()->route('questions.index')->with('success', 'The question has been processed and the response recorded.');
+    }
+    public function update(Request $request, Question $question)
+    {
+
+        $request->validate([
+            'content' => 'required|string|max:255',
+        ]);
+
+        $question->update([
+            'content' => $request->content,
+            'status' => 'validated',
+
+        ]);
+
+        return redirect()->back()->with('success', __('interface.question_updated'));
     }
 }

@@ -46,7 +46,6 @@ return [
         'Room' => ['read', 'list', 'show'],
         'Speaker' => ['read', 'list', 'show'],
         'Sponsor' => ['read', 'list', 'show'],
-        'User' => ['read', 'list', 'show'],
     ],
 
     'moderator-permissions-list' => [
@@ -57,7 +56,6 @@ return [
         'Room' => ['read', 'list', 'show', 'update'],
         'Speaker' => ['read', 'list', 'show', 'update'],
         'Sponsor' => ['read', 'list', 'show', 'update'],
-        'User' => ['read', 'list', 'show'],
     ],
 
 

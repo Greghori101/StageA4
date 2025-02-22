@@ -49,7 +49,7 @@
                     @foreach ($communication->speakers as $speaker)
                         <div class="col-md-4 text-center">
                             <a href="{{ route('speakers.show', $speaker) }}">
-                                <img src="{{ $speaker->avatar->original_url }}" alt="{{ $speaker->full_name }}" class="rounded-circle img-fluid" style="width: 80px; height: 80px;">
+                                <img src="{{ $speaker->avatar?->original_url }}" alt="{{ $speaker->full_name }}" class="rounded-circle img-fluid" style="width: 80px; height: 80px;">
                                 <p>{{ $speaker->full_name }}</p>
                             </a>
                         </div>
@@ -68,7 +68,7 @@
                     @foreach ($communication->sponsors as $sponsor)
                         <div class="col-md-4 text-center">
                             <a href="{{ route('sponsors.show', $sponsor) }}">
-                                <img src="{{ $sponsor->logo->original_url }}" alt="{{ $sponsor->name }}" class="img-fluid" style="max-height: 60px;">
+                                <img src="{{ $sponsor->logo?->original_url }}" alt="{{ $sponsor->name }}" class="img-fluid" style="max-height: 60px;">
                                 <p>{{ $sponsor->name }}</p>
                             </a>
                         </div>

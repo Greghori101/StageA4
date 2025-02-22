@@ -115,7 +115,7 @@
     @endif
 
     <!-- Pagination -->
-    <div class="mt-3">
+    <div class="mt-3 flex justify-center">
         {{ $users->appends(['search' => request()->query('search')])->links() }}
     </div>
 </div>

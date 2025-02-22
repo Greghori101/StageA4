@@ -43,10 +43,9 @@ Route::resource('speakers', SpeakerController::class);
 Route::resource('rooms', RoomController::class);
 
 // Questions
+Route::resource('questions', QuestionController::class);
+
 Route::prefix('questions')->name('questions.')->group(function () {
-    Route::get('/', [QuestionController::class, 'index'])->name('index'); // View all questions
-    Route::get('/create', [QuestionController::class, 'create'])->name('create'); // Show create form
-    Route::post('/store', [QuestionController::class, 'store'])->name('store'); // Store new question
     Route::post('/{id}/validate', [QuestionController::class, 'validateQuestion'])->name('validate'); // Validate question
     Route::post('/{id}/reject', [QuestionController::class, 'reject'])->name('reject'); // Reject question
     Route::post('/{id}/process', [QuestionController::class, 'process'])->name('process'); // Process question (answered verbally)

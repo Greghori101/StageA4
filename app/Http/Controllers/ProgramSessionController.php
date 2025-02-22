@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProgramSession;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ProgramSessionController extends Controller
@@ -30,7 +31,9 @@ class ProgramSessionController extends Controller
      */
     public function create()
     {
-        return view('program_sessions.create');
+        $users = User::role('moderator')->get();
+
+        return view('program_sessions.create', compact('users',));
     }
 
     /**
@@ -43,10 +46,12 @@ class ProgramSessionController extends Controller
             'date' => 'required|date',
             'start_time' => 'required',
             'end_time' => 'required|after:start_time',
+            'moderators' => 'nullable|array',
+            'moderators.*' => 'exists:users,id',
         ]);
 
-        ProgramSession::create($request->all());
-
+        $programSession = ProgramSession::create($request->all());
+        $programSession->users()->sync($request->moderators ?? []);
         return redirect()->route('program_sessions.index')->with('success', 'Session ajoutée avec succès.');
     }
 
@@ -55,7 +60,9 @@ class ProgramSessionController extends Controller
      */
     public function edit(ProgramSession $programSession)
     {
-        return view('program_sessions.edit', compact('programSession'));
+        $users = User::role('moderator')->get();
+
+        return view('program_sessions.edit', compact('programSession', 'users'));
     }
 
     /**
@@ -68,9 +75,12 @@ class ProgramSessionController extends Controller
             'date' => 'required|date',
             'start_time' => 'required',
             'end_time' => 'required|after:start_time',
+            'moderators' => 'nullable|array',
+            'moderators.*' => 'exists:users,id',
         ]);
 
         $programSession->update($request->all());
+        $programSession->users()->sync($request->moderators ?? []);
 
         return redirect()->route('program_sessions.index')->with('success', 'Session mise à jour avec succès.');
     }

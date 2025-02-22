@@ -78,10 +78,6 @@
             <li class="nav-item"><a class="nav-link" href="{{ route('rooms.index') }}">{{ __('interface.rooms') }}</a></li>
             @endif
 
-            @if(auth()->check() && Auth::user()->can('read Favorite'))
-            <li class="nav-item"><a class="nav-link" href="{{ route('favorites.index') }}">{{ __('interface.favorites') }}</a></li>
-            @endif
-
             @if(auth()->check() && Auth::user()->can('read User'))
             <li class="nav-item"><a class="nav-link" href="{{ route('users.index') }}">{{ __('interface.manage_users') }}</a></li>
             @endif

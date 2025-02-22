@@ -16,7 +16,7 @@
 
         <!-- Avatar -->
         <div class="mb-3 text-center">
-            <img src="{{ $user->avatar ? $user->avatar->original_url : asset('images/default-avatar.png') }}"
+            <img src="{{ $user->avatar ? $user->avatar?->original_url : asset('images/default-avatar.png') }}"
                  class="rounded-circle" style="width: 120px; height: 120px;">
             <input type="file" name="avatar" class="form-control mt-2">
         </div>
