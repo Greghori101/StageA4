@@ -28,6 +28,39 @@ return [
 
     ],
 
+    'admin-permissions-list' => [
+        'Communication' => ['create', 'read', 'update', 'delete'],
+        'Question' => ['create', 'read', 'update', 'delete', 'respond', 'reject', 'validate'],
+        'ProgramSession' => ['create', 'read', 'update', 'delete'],
+        'Room' => ['create', 'read', 'update', 'delete'],
+        'Speaker' => ['create', 'read', 'update', 'delete'],
+        'Sponsor' => ['create', 'read', 'update', 'delete'],
+        'User' => ['create', 'read', 'update', 'delete'],
+    ],
+
+    'visitor-permissions-list' => [ // Regular authenticated user
+        'Communication' => ['read', 'list', 'show'],
+        'Favorite' => ['create', 'read', 'list', 'show'],
+        'Question' => ['create', 'read', 'list', 'show'],
+        'ProgramSession' => [ 'read'],
+        'Room' => ['read', 'list', 'show'],
+        'Speaker' => ['read', 'list', 'show'],
+        'Sponsor' => ['read', 'list', 'show'],
+        'User' => ['read', 'list', 'show'],
+    ],
+
+    'moderator-permissions-list' => [
+        'Communication' => ['read', 'list', 'show', 'update'],
+        'Favorite' => ['create', 'read', 'list', 'show'],
+        'Question' => ['create', 'read', 'list', 'show', 'update', 'respond', 'reject', 'validate'],
+        'ProgramSession' => [ 'read'],
+        'Room' => ['read', 'list', 'show', 'update'],
+        'Speaker' => ['read', 'list', 'show', 'update'],
+        'Sponsor' => ['read', 'list', 'show', 'update'],
+        'User' => ['read', 'list', 'show'],
+    ],
+
+
     'table_names' => [
 
         /*

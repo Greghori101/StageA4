@@ -24,9 +24,9 @@ class ProgramSession extends Model
     /**
      * Get the session's moderators.
      */
-    public function moderators()
+    public function users()
     {
-        return $this->belongsToMany(Moderator::class, 'moderator_program_session');
+        return $this->belongsToMany(User::class, 'moderator_program_session','user_id','program_session_id');
     }
 
     /**

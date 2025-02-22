@@ -8,13 +8,13 @@
     <h1>Modifier Utilisateur</h1>
 
     @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
     @endif
 
     <form action="{{ route('users.update', $user->id) }}" method="POST">
@@ -49,6 +49,19 @@
         <div class="mb-3">
             <label for="institution" class="form-label">Institution</label>
             <input type="text" name="institution" id="institution" class="form-control" value="{{ old('institution', $user->institution) }}">
+        </div>
+        <div class="mb-3">
+            <label for="job_title" class="form-label">Titre du poste</label>
+            <input type="text" name="job_title" id="job_title" class="form-control" value="{{ old('job_title', $user->job_title) }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="role" class="form-label">Rôle</label>
+            <select name="role" id="role" class="form-control" required>
+                <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Administrateur</option>
+                <option value="moderator" {{ $user->role == 'moderator' ? 'selected' : '' }}>Modérateur</option>
+                <option value="visitor" {{ $user->role == 'visitor' ? 'selected' : '' }}>Visiteur</option>
+            </select>
         </div>
 
         <div class="mb-3">

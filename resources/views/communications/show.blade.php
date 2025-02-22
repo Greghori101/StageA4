@@ -81,12 +81,18 @@
     </div>
 
     <div class="mt-4">
-        <a href="{{ route('communications.edit', $communication) }}" class="btn btn-primary">Modifier</a>
-        <form action="{{ route('communications.destroy', $communication) }}" method="POST" class="d-inline">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette communication ?');">Supprimer</button>
-        </form>
+        @if(auth()->user()->can('update Communication'))
+            <a href="{{ route('communications.edit', $communication) }}" class="btn btn-primary">Modifier</a>
+        @endif
+
+        @if(auth()->user()->can('delete Communication'))
+            <form action="{{ route('communications.destroy', $communication) }}" method="POST" class="d-inline">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette communication ?');">Supprimer</button>
+            </form>
+        @endif
+
         <a href="{{ route('communications.index') }}" class="btn btn-secondary">Retour</a>
     </div>
 </div>

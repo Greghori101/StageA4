@@ -6,6 +6,7 @@ use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
@@ -16,10 +17,47 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // Create Roles
-        $roles = ['admin', 'speaker', 'sponsor', 'visitor', 'moderator'];
+        $roles = ['admin', 'visitor', 'moderator'];
 
         foreach ($roles as $role) {
             Role::firstOrCreate(['name' => $role]);
+        }
+
+        $role = Role::firstOrCreate(['name' => 'admin']);
+
+        foreach (config('permission.admin-permissions-list') as $model => $actions) {
+
+            foreach ($actions as $action) {
+                $permission = Permission::firstOrCreate([
+                    'name' => "$action $model",
+                    'guard_name' => 'web',
+                ]);
+                $role->givePermissionTo($permission);
+            }
+        }
+        $role = Role::firstOrCreate(['name' => 'visitor']);
+
+        foreach (config('permission.visitor-permissions-list') as $model => $actions) {
+
+            foreach ($actions as $action) {
+                $permission = Permission::firstOrCreate([
+                    'name' => "$action $model",
+                    'guard_name' => 'web',
+                ]);
+                $role->givePermissionTo($permission);
+            }
+        }
+        $role = Role::firstOrCreate(['name' => 'moderator']);
+
+        foreach (config('permission.moderator-permissions-list') as $model => $actions) {
+
+            foreach ($actions as $action) {
+                $permission = Permission::firstOrCreate([
+                    'name' => "$action $model",
+                    'guard_name' => 'web',
+                ]);
+                $role->givePermissionTo($permission);
+            }
         }
 
         // Create Admin User
@@ -51,5 +89,19 @@ class DatabaseSeeder extends Seeder
             ]
         );
         $visitor->assignRole('visitor');
+
+        $moderator = User::firstOrCreate(
+            ['email' => 'moderator@example.com'],
+            [
+                'full_name' => 'Moderator User',
+                'nickname' => 'moderator',
+                'password' => Hash::make('password'),
+                'institution' => 'Moderator Institution',
+                'address' => 'Moderator Address',
+                'country' => 'Moderator Country',
+                'state' => 'Moderator State',
+            ]
+        );
+        $moderator->assignRole('moderator');
     }
 }

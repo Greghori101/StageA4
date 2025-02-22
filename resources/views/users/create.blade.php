@@ -8,13 +8,13 @@
     <h1>Ajouter un Utilisateur</h1>
 
     @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
     @endif
 
     <form action="{{ route('users.store') }}" method="POST">
@@ -34,10 +34,25 @@
             <label for="email" class="form-label">Email</label>
             <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}" required>
         </div>
-        
+
         <div class="mb-3">
             <label for="institution" class="form-label">Institution</label>
             <input type="text" name="institution" id="institution" class="form-control" value="{{ old('institution') }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="job_title" class="form-label">Titre du Poste</label>
+            <input type="text" name="job_title" id="job_title" class="form-control" value="{{ old('job_title') }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="role" class="form-label">Rôle</label>
+            <select name="role" id="role" class="form-control" required>
+                <option value="" disabled selected>Choisissez un rôle</option>
+                <option value="admin">Administrateur</option>
+                <option value="moderator">Modérateur</option>
+                <option value="visitor">Visiteur</option>
+            </select>
         </div>
 
         <div class="mb-3">

@@ -1,7 +1,8 @@
 <head>
     <style>
         .dropdown-toggle-text {
-            color: #ff5733; /* Couleur personnalisée */
+            color: #ff5733;
+            /* Couleur personnalisée */
         }
     </style>
 </head>
@@ -24,24 +25,23 @@
         <!-- Authentification -->
         <div class="ms-auto d-flex align-items-center">
             @guest
-                <a href="{{ route('login') }}" class="btn btn-outline-primary">Se connecter</a>
+            <a href="{{ route('login') }}" class="btn btn-outline-primary">Se connecter</a>
             @else
-                <span class="me-3">Bonjour,</span>
+            <span class="me-3">Bonjour,</span>
 
-                <!-- Dropdown utilisateur -->
-                <div class="dropdown">
-                    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="dropdown-toggle-text">{{ Auth::user()->surnom ?: Auth::user()->name }}</span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                        <li>
-                            <form action="{{ route('logout') }}" method="POST">
-                                @csrf
-                                <button type="submit" class="dropdown-item">Se déconnecter</button>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
+            <!-- Dropdown utilisateur -->
+            <div class="dropdown">
+                <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="dropdown-toggle-text">{{ Auth::user()->surnom ?: Auth::user()->name }}</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <li><a href="{{ route('profile.show') }}" class="dropdown-item">Mon Profil</a></li>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="dropdown-item">Se déconnecter</button>
+                    </form>
+                </ul>
+            </div>
             @endguest
         </div>
     </div>
@@ -49,17 +49,33 @@
     <!-- Menu principal -->
     <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item"><a class="nav-link" href="{{ route('program_sessions.index') }}">Programme</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('moderators.index') }}">Moderateur</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('speakers.index') }}">Orateurs</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('rooms.index') }}">Salles</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('sponsors.index') }}">Exposants</a></li>
-
             @auth
-                @if(Auth::user()->hasRole('admin'))  <!-- Vérification du rôle avec Spatie -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('users.index') }}">Gérer les utilisateurs</a>
-                    </li>
+                @if(Auth::user()->can('read ProgramSession'))
+                    <li class="nav-item"><a class="nav-link" href="{{ route('program_sessions.index') }}">Programme</a></li>
+                @endif
+
+                @if(Auth::user()->can('read Speaker'))
+                    <li class="nav-item"><a class="nav-link" href="{{ route('speakers.index') }}">Orateurs</a></li>
+                @endif
+
+                @if(Auth::user()->can('read Room'))
+                    <li class="nav-item"><a class="nav-link" href="{{ route('rooms.index') }}">Salles</a></li>
+                @endif
+
+                @if(Auth::user()->can('read Sponsor'))
+                    <li class="nav-item"><a class="nav-link" href="{{ route('sponsors.index') }}">Exposants</a></li>
+                @endif
+
+                @if(Auth::user()->can('read Question'))
+                    <li class="nav-item"><a class="nav-link" href="{{ route('questions.index') }}">Questions</a></li>
+                @endif
+
+                @if(Auth::user()->can('read Favorite'))
+                    <li class="nav-item"><a class="nav-link" href="{{ route('favorites.index') }}">Favoris</a></li>
+                @endif
+
+                @if(Auth::user()->can('read User'))
+                    <li class="nav-item"><a class="nav-link" href="{{ route('users.index') }}">Gérer les utilisateurs</a></li>
                 @endif
             @endauth
         </ul>

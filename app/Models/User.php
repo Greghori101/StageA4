@@ -20,6 +20,8 @@ class User extends Authenticatable implements HasMedia
      * @var array<int, string>
      */
     protected $fillable = [
+        'job_title',
+        'scanned',
         'full_name',
         'nickname',
         'email',
@@ -71,5 +73,11 @@ class User extends Authenticatable implements HasMedia
     public function avatar()
     {
         return $this->morphOne(Media::class, 'model')->where('collection_name', 'avatar');
+    }
+
+
+    public function programSessions()
+    {
+        return $this->belongsToMany(ProgramSession::class, 'moderator_program_session','program_session_id','user_id');
     }
 }

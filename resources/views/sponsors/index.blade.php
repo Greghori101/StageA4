@@ -24,10 +24,12 @@
         </div>
     </form>
 
-    <!-- Bouton pour ajouter un sponsor -->
+    @if(auth()->user()->can('create Sponsor'))
     <a href="{{ route('sponsors.create') }}" class="btn btn-primary mb-3">Ajouter un Sponsor</a>
+    @endif
 
-    <!-- Table des sponsors -->
+    @if(auth()->user()->hasRole('admin'))
+    <!-- Table des sponsors pour les admins -->
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -42,37 +44,83 @@
         <tbody>
             @foreach ($sponsors as $sponsor)
             <tr>
-                <td>{{ $sponsor->id }}</td>
+                <td>{{ $loop->iteration }}</td>
                 <td>{{ $sponsor->name }}</td>
                 <td>{{ $sponsor->category ?? 'N/A' }}</td>
-                <td>{{ $sponsor->description ?? 'N/A' }}</td>
+                <td>{{ Str::limit($sponsor->description, 50, '...') }}</td>
                 <td>
-                    @if ($sponsor->logo)
-                    <img src="{{ $sponsor->logo->getUrl() }}" alt="Logo" width="50">
+                    @if ($sponsor->getFirstMediaUrl('logo'))
+                    <img src="{{ $sponsor->getFirstMediaUrl('logo') }}" alt="Logo" width="50">
                     @else
                     <span>Aucun logo</span>
                     @endif
                 </td>
                 <td>
                     <x-favorite-button modelType="App\Models\Sponsor" :modelId="$sponsor->id" />
-                    <!-- Lien pour modifier -->
-                    <a href="{{ route('sponsors.edit', $sponsor->id) }}" class="btn btn-warning btn-sm">Modifier</a>
+                    <a href="{{ route('sponsors.show', $sponsor->id) }}" class="btn btn-info btn-sm">Voir</a>
 
-                    <!-- Formulaire pour supprimer -->
-                    <form action="{{ route('sponsors.destroy', $sponsor->id) }}" method="POST" style="display:inline-block;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Voulez-vous vraiment supprimer ce sponsor ?')">Supprimer</button>
-                    </form>
+                    @if(auth()->user()->can('update Sponsor'))
+                    <a href="{{ route('sponsors.edit', $sponsor->id) }}" class="btn btn-warning btn-sm">Modifier</a>
+                    @endif
+
+                    @if(auth()->user()->can('delete Sponsor'))
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteSponsorModal{{ $sponsor->id }}">
+                        Supprimer
+                    </button>
+
+                    <!-- Modal de confirmation -->
+                    <div class="modal fade" id="deleteSponsorModal{{ $sponsor->id }}" tabindex="-1" aria-labelledby="deleteSponsorLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteSponsorLabel">Confirmer la suppression</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Voulez-vous vraiment supprimer le sponsor "{{ $sponsor->name }}" ?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                    <form action="{{ route('sponsors.destroy', $sponsor->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
                 </td>
             </tr>
             @endforeach
         </tbody>
     </table>
+    @else
+    <!-- Vue en cartes pour les visiteurs et modérateurs -->
+    <div class="row">
+        @foreach ($sponsors as $sponsor)
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm h-100">
+                @if ($sponsor->getFirstMediaUrl('logo'))
+                <img src="{{ $sponsor->getFirstMediaUrl('logo') }}" class="card-img-top" alt="Logo">
+                @endif
+                <div class="card-body">
+                    <h5 class="card-title">{{ $sponsor->name }}</h5>
+                    <p class="card-text"><strong>Catégorie :</strong> {{ $sponsor->category ?? 'N/A' }}</p>
+                    <p class="card-text">{{ Str::limit($sponsor->description, 80, '...') }}</p>
+                    <x-favorite-button modelType="App\Models\Sponsor" :modelId="$sponsor->id" />
+                    <a href="{{ route('sponsors.show', $sponsor->id) }}" class="btn btn-info btn-sm">Voir</a>
+                </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
+    @endif
 
     <!-- Pagination -->
     <div class="mt-3">
-        {{ $sponsors->links() }}
+        {{ $sponsors->appends(['search' => request()->query('search')])->links() }}
     </div>
 </div>
 

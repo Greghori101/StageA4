@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('moderator_program_session', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('moderator_id')->constrained('moderators')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('program_session_id')->constrained('program_sessions')->onDelete('cascade');
             $table->timestamps();
         });

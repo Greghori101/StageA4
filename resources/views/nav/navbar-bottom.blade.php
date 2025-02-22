@@ -1,4 +1,3 @@
-
 <!-- Navbar en bas -->
 <div class="navbar-bottom">
     <div class="col text-center">
@@ -37,6 +36,9 @@
         </a>
     </div>
 
+    @auth
+    @if(Auth::user()->can('read Favorite'))
+
     <div class="col text-center">
         <a href="{{ route('favorites.index') }}" class="navbar-link {{ request()->routeIs('favorites.index') ? 'active' : '' }}">
             <div class="navbar-item">
@@ -45,4 +47,6 @@
             </div>
         </a>
     </div>
+    @endif
+    @endauth
 </div>

@@ -7,11 +7,10 @@ use App\Http\Controllers\SpeakerController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ProgramSessionController;
-use App\Http\Controllers\ModeratorController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\CommunicationController;
 use App\Http\Controllers\AuthController;
-
+use App\Models\User;
 
 Route::get('/', function () {
     return view('home.home');
@@ -26,6 +25,12 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Users
 Route::resource('users', UserController::class);
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [UserController::class, 'showProfile'])->name('profile.show');
+    Route::get('/profile/edit', [UserController::class, 'editProfile'])->name('profile.edit');
+    Route::put('/profile/update/{user}', [UserController::class, 'updateProfile'])->name('profile.update');
+});
 
 // Sponsors
 Route::resource('sponsors', SponsorController::class);
@@ -52,9 +57,6 @@ Route::prefix('questions')->name('questions.')->group(function () {
 // Program Sessions
 Route::resource('program_sessions', ProgramSessionController::class);
 
-// Moderators
-Route::resource('moderators', ModeratorController::class);
-
 // Favorites
 Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
 Route::post('/favorites', [FavoriteController::class, 'store'])->name('favorites.store');
@@ -63,3 +65,21 @@ Route::get('/favorites/toggle/{modelType}/{modelId}', [FavoriteController::class
 
 // Communications
 Route::resource('communications', CommunicationController::class);
+
+
+Route::get('/verify-qr/{id}', function ($id) {
+    $user = User::find($id);
+
+    if (!$user) {
+        return view('verification.error', ['message' => 'Invalid QR Code!']);
+    }
+
+    if ($user->scanned) {
+        return view('verification.checked', compact('user'));
+    }
+
+    // Update the scanned field to true
+    $user->update(['scanned' => true]);
+
+    return view('verification.success', compact('user'));
+})->name('verify.qr');

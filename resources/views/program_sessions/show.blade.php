@@ -13,6 +13,8 @@
             <p><strong>Heure de début:</strong> {{ $programSession->start_time }}</p>
             <p><strong>Heure de fin:</strong> {{ $programSession->end_time }}</p>
 
+            <x-favorite-button modelType="App\Models\ProgramSession" :modelId="$programSession->id" />
+
             <hr>
 
             <h5>Communications liées</h5>
@@ -65,24 +67,34 @@
     </div>
 
     <div class="mt-4">
-        <!-- Bouton pour ajouter une communication -->
-        <a href="{{ route('communications.create', ['program_session_id' => $programSession->id]) }}" class="btn btn-success">
-            <i class="fas fa-plus"></i> Ajouter une communication
-        </a>
+        @if(auth()->user()->can('create Communication'))
+            <!-- Bouton pour ajouter une communication -->
+            <a href="{{ route('communications.create', ['program_session_id' => $programSession->id]) }}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Ajouter une communication
+            </a>
+        @endif
 
-        <!-- Bouton pour modifier -->
-        <a href="{{ route('program_sessions.edit', $programSession) }}" class="btn btn-primary">
-            Modifier
-        </a>
+        @if(auth()->user()->can('update ProgramSession'))
+            <!-- Bouton pour modifier -->
+            <a href="{{ route('program_sessions.edit', $programSession) }}" class="btn btn-primary">Modifier</a>
+        @endif
 
-        <!-- Formulaire de suppression -->
-        <form action="{{ route('program_sessions.destroy', $programSession) }}" method="POST" class="d-inline">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette session ?');">
-                Supprimer
-            </button>
-        </form>
+        @if(auth()->user()->can('delete ProgramSession'))
+            <!-- Formulaire de suppression -->
+            <form action="{{ route('program_sessions.destroy', $programSession) }}" method="POST" class="d-inline">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette session ?');">
+                    Supprimer
+                </button>
+            </form>
+        @endif
+
+        @if(auth()->user()->can('create Question'))
+            <a href="{{ route('questions.create', ['session_id' => $programSession->id]) }}" class="btn btn-primary">
+                Poser une question
+            </a>
+        @endif
 
         <!-- Bouton retour -->
         <a href="{{ route('program_sessions.index') }}" class="btn btn-secondary">Retour</a>
