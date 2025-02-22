@@ -81,11 +81,11 @@
     </div>
 
     <div class="mt-4">
-        @if(auth()->user()->can('update Communication'))
+        @if(auth()->check() && auth()->user()->can('update Communication'))
             <a href="{{ route('communications.edit', $communication) }}" class="btn btn-primary">{{ __('interface.edit') }}</a>
         @endif
 
-        @if(auth()->user()->can('delete Communication'))
+        @if(auth()->check() && auth()->user()->can('delete Communication'))
             <form action="{{ route('communications.destroy', $communication) }}" method="POST" class="d-inline">
                 @csrf
                 @method('DELETE')

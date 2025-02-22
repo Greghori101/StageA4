@@ -37,7 +37,7 @@
     </div>
 
     @auth
-    @if(Auth::user()->can('read Favorite'))
+    @if(auth()->check() && Auth::user()->can('read Favorite'))
     <div class="col text-center">
         <a href="{{ route('favorites.index') }}" class="navbar-link {{ request()->routeIs('favorites.index') ? 'active' : '' }}">
             <div class="navbar-item">

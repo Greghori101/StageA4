@@ -24,7 +24,7 @@
         </div>
     </form>
 
-    @if(auth()->user()->can('create Sponsor'))
+    @if(auth()->check() && auth()->user()->can('create Sponsor'))
     <a href="{{ route('sponsors.create') }}" class="btn btn-primary mb-3">{{ __('interface.add_sponsor') }}</a>
     @endif
 
@@ -56,14 +56,16 @@
                     @endif
                 </td>
                 <td>
+                    @if(auth()->check() && auth()->user()->can('create Favorite'))
                     <x-favorite-button modelType="App\Models\Sponsor" :modelId="$sponsor->id" />
+                    @endif
                     <a href="{{ route('sponsors.show', $sponsor->id) }}" class="btn btn-info btn-sm">{{ __('interface.view') }}</a>
 
-                    @if(auth()->user()->can('update Sponsor'))
+                    @if(auth()->check() && auth()->user()->can('update Sponsor'))
                     <a href="{{ route('sponsors.edit', $sponsor->id) }}" class="btn btn-warning btn-sm">{{ __('interface.edit') }}</a>
                     @endif
 
-                    @if(auth()->user()->can('delete Sponsor'))
+                    @if(auth()->check() && auth()->user()->can('delete Sponsor'))
                     <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteSponsorModal{{ $sponsor->id }}">
                         {{ __('interface.delete') }}
                     </button>
@@ -109,7 +111,9 @@
                     <h5 class="card-title">{{ $sponsor->name }}</h5>
                     <p class="card-text"><strong>{{ __('interface.category') }}:</strong> {{ $sponsor->category ?? __('interface.not_available') }}</p>
                     <p class="card-text">{{ Str::limit($sponsor->description, 80, '...') }}</p>
+                    @if(auth()->check() && auth()->user()->can('create Favorite'))
                     <x-favorite-button modelType="App\Models\Sponsor" :modelId="$sponsor->id" />
+                    @endif
                     <a href="{{ route('sponsors.show', $sponsor->id) }}" class="btn btn-info btn-sm">{{ __('interface.view') }}</a>
                 </div>
             </div>

@@ -30,7 +30,7 @@ return [
 
     'admin-permissions-list' => [
         'Communication' => ['create', 'read', 'update', 'delete'],
-        'Question' => ['create', 'read', 'update', 'delete', 'respond', 'reject', 'validate'],
+        'Question' => [ 'read', 'update', 'delete', 'respond', 'reject', 'validate'],
         'ProgramSession' => ['create', 'read', 'update', 'delete'],
         'Room' => ['create', 'read', 'update', 'delete'],
         'Speaker' => ['create', 'read', 'update', 'delete'],
@@ -52,7 +52,7 @@ return [
     'moderator-permissions-list' => [
         'Communication' => ['read', 'list', 'show', 'update'],
         'Favorite' => ['create', 'read', 'list', 'show'],
-        'Question' => ['create', 'read', 'list', 'show', 'update', 'respond', 'reject', 'validate'],
+        'Question' => ['read', 'list', 'show', 'update', 'respond', 'reject', 'validate'],
         'ProgramSession' => [ 'read'],
         'Room' => ['read', 'list', 'show', 'update'],
         'Speaker' => ['read', 'list', 'show', 'update'],

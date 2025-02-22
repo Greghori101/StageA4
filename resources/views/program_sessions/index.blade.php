@@ -25,7 +25,7 @@
     </form>
 
     <!-- Bouton pour ajouter une nouvelle session (Admin uniquement) -->
-    @if(auth()->user()->can('create ProgramSession'))
+    @if(auth()->check() && auth()->user()->can('create ProgramSession'))
         <a href="{{ route('program_sessions.create') }}" class="btn btn-primary mb-3">{{ __('interface.add_session') }}</a>
     @endif
 
@@ -67,14 +67,16 @@
                         @endif
                     </td>
                     <td>
+                    @if(auth()->check() && auth()->user()->can('create Favorite'))
                         <x-favorite-button modelType="App\Models\ProgramSession" :modelId="$session->id" />
+                    @endif
                         <a href="{{ route('program_sessions.show', $session->id) }}" class="btn btn-info btn-sm">{{ __('interface.view') }}</a>
 
-                        @if(auth()->user()->can('update ProgramSession'))
+                        @if(auth()->check() && auth()->user()->can('update ProgramSession'))
                             <a href="{{ route('program_sessions.edit', $session->id) }}" class="btn btn-warning btn-sm">{{ __('interface.edit') }}</a>
                         @endif
 
-                        @if(auth()->user()->can('delete ProgramSession'))
+                        @if(auth()->check() && auth()->user()->can('delete ProgramSession'))
                             <form action="{{ route('program_sessions.destroy', $session->id) }}" method="POST" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
@@ -96,12 +98,13 @@
                         <h5 class="card-title">{{ $session->name }}</h5>
                         <p class="card-text"><strong>{{ __('interface.date') }} :</strong> {{ $session->date }}</p>
                         <p class="card-text"><strong>{{ __('interface.time') }} :</strong> {{ $session->start_time }} - {{ $session->end_time }}</p>
-
+                        @if(auth()->check() && auth()->user()->can('create Favorite'))
                         <x-favorite-button modelType="App\Models\ProgramSession" :modelId="$session->id" />
+                        @endif
 
                         <a href="{{ route('program_sessions.show', $session->id) }}" class="btn btn-info btn-sm">{{ __('interface.view') }}</a>
 
-                        @if(auth()->user()->can('create Question'))
+                        @if(auth()->check() && auth()->user()->can('create Question'))
                             <a href="{{ route('questions.create', ['session_id' => $session->id]) }}" class="btn btn-primary btn-sm">{{ __('interface.ask_question') }}</a>
                         @endif
                     </div>

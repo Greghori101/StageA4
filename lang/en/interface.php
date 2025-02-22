@@ -144,5 +144,8 @@ return [
     'return_to_user_list' => 'Return to user list',
     'error' => 'Error',
     'thank_you' => 'Thank you for using our platform.',
+'name' => 'Name',
+'edit' => 'Edit',
+'page_programme' => 'Program Page',
 
 ];

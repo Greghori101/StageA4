@@ -12,8 +12,9 @@
             <p><strong>{{ __('interface.date') }}:</strong> {{ $programSession->date }}</p>
             <p><strong>{{ __('interface.start_time') }}:</strong> {{ $programSession->start_time }}</p>
             <p><strong>{{ __('interface.end_time') }}:</strong> {{ $programSession->end_time }}</p>
-
+            @if(auth()->check() && auth()->user()->can('create Favorite'))
             <x-favorite-button modelType="App\Models\ProgramSession" :modelId="$programSession->id" />
+            @endif
 
             <hr>
 
@@ -67,17 +68,17 @@
     </div>
 
     <div class="mt-4">
-        @if(auth()->user()->can('create Communication'))
+        @if(auth()->check() && auth()->user()->can('create Communication'))
             <a href="{{ route('communications.create', ['program_session_id' => $programSession->id]) }}" class="btn btn-success">
                 <i class="fas fa-plus"></i> {{ __('interface.add_communication') }}
             </a>
         @endif
 
-        @if(auth()->user()->can('update ProgramSession'))
+        @if(auth()->check() && auth()->user()->can('update ProgramSession'))
             <a href="{{ route('program_sessions.edit', $programSession) }}" class="btn btn-primary">{{ __('interface.edit') }}</a>
         @endif
 
-        @if(auth()->user()->can('delete ProgramSession'))
+        @if(auth()->check() && auth()->user()->can('delete ProgramSession'))
             <form action="{{ route('program_sessions.destroy', $programSession) }}" method="POST" class="d-inline">
                 @csrf
                 @method('DELETE')
@@ -87,7 +88,7 @@
             </form>
         @endif
 
-        @if(auth()->user()->can('create Question'))
+        @if(auth()->check() && auth()->user()->can('create Question'))
             <a href="{{ route('questions.create', ['session_id' => $programSession->id]) }}" class="btn btn-primary">
                 {{ __('interface.ask_question') }}
             </a>

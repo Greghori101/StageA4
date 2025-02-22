@@ -6,7 +6,7 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1>{{ __('interface.speakers') }}</h1>
-        @if(auth()->user()->can('create Speaker'))
+        @if(auth()->check() && auth()->user()->can('create Speaker'))
             <a href="{{ route('speakers.create') }}" class="btn btn-primary">{{ __('interface.add_new_speaker') }}</a>
         @endif
     </div>
@@ -43,14 +43,16 @@
                                 @endif
                             </td>
                             <td>
+                            @if(auth()->check() && auth()->user()->can('create Favorite'))
                                 <x-favorite-button modelType="App\Models\Speaker" :modelId="$speaker->id" />
+                            @endif
                                 <a href="{{ route('speakers.show', $speaker) }}" class="btn btn-info btn-sm">{{ __('interface.view') }}</a>
 
-                                @if(auth()->user()->can('update Speaker'))
+                                @if(auth()->check() && auth()->user()->can('update Speaker'))
                                     <a href="{{ route('speakers.edit', $speaker) }}" class="btn btn-warning btn-sm">{{ __('interface.edit') }}</a>
                                 @endif
 
-                                @if(auth()->user()->can('delete Speaker'))
+                                @if(auth()->check() && auth()->user()->can('delete Speaker'))
                                     <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteSpeakerModal{{ $speaker->id }}">
                                         {{ __('interface.delete') }}
                                     </button>
@@ -100,7 +102,9 @@
                             <h5 class="card-title">{{ $speaker->full_name }}</h5>
                             <p>{{ Str::limit($speaker->biography, 100) }}</p>
                             <a href="{{ route('speakers.show', $speaker) }}" class="btn btn-info btn-sm">{{ __('interface.view') }}</a>
+                            @if(auth()->check() && auth()->user()->can('create Favorite'))
                             <x-favorite-button modelType="App\Models\Speaker" :modelId="$speaker->id" />
+                            @endif
                         </div>
                     </div>
                 </div>

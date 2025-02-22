@@ -27,12 +27,12 @@
             @guest
             <a href="{{ route('login') }}" class="btn btn-outline-primary">{{ __('interface.login') }}</a>
             @else
-            <span class="me-3">{{ __('interface.hello') }},</span>
+            <span class="me-3">{{ __('interface.hello',['name'=> Auth::user()->nickname ?: Auth::user()->name]) }},</span>
 
             <!-- Dropdown utilisateur -->
             <div class="dropdown">
                 <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span class="dropdown-toggle-text">{{ Auth::user()->surnom ?: Auth::user()->name }}</span>
+                    <span class="dropdown-toggle-text">{{ Auth::user()->nickname ?: Auth::user()->name }}</span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                     <li><a href="{{ route('profile.show') }}" class="dropdown-item">{{ __('interface.profile') }}</a></li>
@@ -66,31 +66,23 @@
     <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             @auth
-            @if(Auth::user()->can('read ProgramSession'))
+            @if(auth()->check() && Auth::user()->can('read ProgramSession'))
             <li class="nav-item"><a class="nav-link" href="{{ route('program_sessions.index') }}">{{ __('interface.program') }}</a></li>
             @endif
 
-            @if(Auth::user()->can('read Speaker'))
+            @if(auth()->check() && Auth::user()->can('read Speaker'))
             <li class="nav-item"><a class="nav-link" href="{{ route('speakers.index') }}">{{ __('interface.speakers') }}</a></li>
             @endif
 
-            @if(Auth::user()->can('read Room'))
+            @if(auth()->check() && Auth::user()->can('read Room'))
             <li class="nav-item"><a class="nav-link" href="{{ route('rooms.index') }}">{{ __('interface.rooms') }}</a></li>
             @endif
 
-            @if(Auth::user()->can('read Sponsor'))
-            <li class="nav-item"><a class="nav-link" href="{{ route('sponsors.index') }}">{{ __('interface.exhibitors') }}</a></li>
-            @endif
-
-            @if(Auth::user()->can('read Question'))
-            <li class="nav-item"><a class="nav-link" href="{{ route('questions.index') }}">{{ __('interface.questions') }}</a></li>
-            @endif
-
-            @if(Auth::user()->can('read Favorite'))
+            @if(auth()->check() && Auth::user()->can('read Favorite'))
             <li class="nav-item"><a class="nav-link" href="{{ route('favorites.index') }}">{{ __('interface.favorites') }}</a></li>
             @endif
 
-            @if(Auth::user()->can('read User'))
+            @if(auth()->check() && Auth::user()->can('read User'))
             <li class="nav-item"><a class="nav-link" href="{{ route('users.index') }}">{{ __('interface.manage_users') }}</a></li>
             @endif
             @endauth

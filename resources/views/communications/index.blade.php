@@ -36,7 +36,9 @@
                             <td>{{ $communication->programSession?->name ?? __('interface.na') }}</td>
                             <td>{{ $communication->room?->name ?? __('interface.na') }}</td>
                             <td>
+                            @if(auth()->check() && auth()->user()->can('create Favorite'))
                                 <x-favorite-button modelType="App\Models\Communication" :modelId="$communication->id" />
+                            @endif
                                 <a href="{{ route('communications.show', $communication) }}" class="btn btn-info btn-sm">{{ __('interface.view') }}</a>
 
                                 @can('update Communication')

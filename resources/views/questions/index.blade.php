@@ -55,7 +55,9 @@
                                     @if ($question->speaker)
                                         <br><small>{{ __('interface.speaker') }}: {{ $question->speaker->name }}</small>
                                     @endif
+                                    @if(auth()->check() && auth()->user()->can('create Favorite'))
                                     <x-favorite-button modelType="App\Models\Question" :modelId="$question->id" />
+                                @endif
 
                                     <div class="mt-2">
                                         <form action="{{ route('questions.validate', $question->id) }}" method="POST" style="display: inline;">
@@ -93,7 +95,9 @@
                                 @if ($question->speaker)
                                     <br><small>{{ __('interface.speaker') }}: {{ $question->speaker->name }}</small>
                                 @endif
+                                @if(auth()->check() && auth()->user()->can('create Favorite'))
                                 <x-favorite-button modelType="App\Models\Question" :modelId="$question->id" />
+                                @endif
 
                                 @if(auth()->check() && auth()->user()->can('update Question'))
                                     <div class="mt-2">
@@ -135,7 +139,10 @@
                                 @endif
                                 <strong>{{ __('interface.answer') }}:</strong>
                                 <p>{{ $question->answer ?? __('interface.no_answer') }}</p>
+                                @if(auth()->check() && auth()->user()->can('create Favorite'))
                                 <x-favorite-button modelType="App\Models\Question" :modelId="$question->id" />
+                                @endif
+
                             </div>
                         </div>
                     </div>

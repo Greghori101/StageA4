@@ -7,7 +7,7 @@
 <div class="container mt-5">
     <h1>{{ __('interface.manage_users') }}</h1>
 
-    @if(auth()->user()->can('update User'))
+    @if(auth()->check() && auth()->user()->can('update User'))
         {{-- Scan QR Code Button --}}
         <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#qrScannerModal">
             <i class="fas fa-qrcode"></i> {{ __('interface.scan_qr_code') }}
@@ -29,7 +29,7 @@
         </div>
     </form>
 
-    @if(auth()->user()->can('create User'))
+    @if(auth()->check() && auth()->user()->can('create User'))
         <a href="{{ route('users.create') }}" class="btn btn-primary mb-3">{{ __('interface.add_user') }}</a>
     @endif
 
@@ -59,11 +59,11 @@
                         <td>{{ $user->state }}</td>
                         <td>{{ $user->country }}</td>
                         <td>
-                            @if(auth()->user()->can('update User'))
+                            @if(auth()->check() && auth()->user()->can('update User'))
                                 <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">{{ __('interface.edit') }}</a>
                             @endif
 
-                            @if(auth()->user()->can('delete User'))
+                            @if(auth()->check() && auth()->user()->can('delete User'))
                                 <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ $user->id }}">
                                     {{ __('interface.delete') }}
                                 </button>

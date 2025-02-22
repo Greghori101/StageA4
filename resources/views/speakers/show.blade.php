@@ -20,15 +20,17 @@
             @endif
 
             <div class="mt-4">
+            @if(auth()->check() && auth()->user()->can('create Favorite'))
                 <x-favorite-button modelType="App\Models\Speaker" :modelId="$speaker->id" />
+            @endif
 
-                @if(auth()->user()->can('update Speaker'))
+                @if(auth()->check() && auth()->user()->can('update Speaker'))
                     <a href="{{ route('speakers.edit', $speaker) }}" class="btn btn-warning">{{ __('interface.edit') }}</a>
                 @endif
 
                 <a href="{{ route('speakers.index') }}" class="btn btn-secondary">{{ __('interface.back_to_list') }}</a>
 
-                @if(auth()->user()->can('delete Speaker'))
+                @if(auth()->check() && auth()->user()->can('delete Speaker'))
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteSpeakerModal">
                         {{ __('interface.delete') }}
                     </button>
@@ -76,7 +78,9 @@
                                 <br>
                                 <small>{{ __('interface.communication') }}: {{ $question->communication->title ?? __('interface.not_specified') }}</small>
                                 <div class="mt-3">
+                                @if(auth()->check() && auth()->user()->can('create Favorite'))
                                     <x-favorite-button modelType="App\Models\Question" :modelId="$question->id" />
+                                @endif
                                 </div>
                             </div>
                         </div>
