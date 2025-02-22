@@ -13,7 +13,7 @@
     @endif
 
     @can('read Communication')
-        @if(auth()->user()->hasRole('admin'))
+        @if(auth()->check() && auth()->user()->hasRole('admin'))
             <table class="table table-bordered">
                 <thead>
                     <tr>

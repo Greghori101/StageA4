@@ -11,9 +11,11 @@
 <nav class="navbar">
     <div class="container-fluid d-flex align-items-center">
         <!-- Bouton de toggle pour le menu (mobile) -->
+        @if(auth()->check())
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="{{ __('interface.toggle_navigation') }}">
             <span class="navbar-toggler-icon"></span>
         </button>
+        @endif
 
         <!-- Titre de la navbar (centré) -->
         <div class="text-center flex-grow-1">

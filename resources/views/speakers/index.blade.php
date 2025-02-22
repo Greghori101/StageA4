@@ -15,7 +15,7 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    @if(auth()->user()->hasRole('admin'))
+    @if(auth()->check() && auth()->user()->hasRole('admin'))
         <!-- ADMIN VIEW : TABLE -->
         <div class="card">
             <div class="card-body">

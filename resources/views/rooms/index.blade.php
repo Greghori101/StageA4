@@ -14,7 +14,7 @@
     @endif
 
     @if(auth()->check() && auth()->user()->can('read Room'))
-        @if(auth()->user()->hasRole('admin'))
+        @if(auth()->check() && auth()->user()->hasRole('admin'))
             <!-- ADMIN VIEW : TABLE -->
             <div class="card">
                 <div class="card-body">

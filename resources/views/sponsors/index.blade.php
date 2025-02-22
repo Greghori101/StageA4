@@ -28,7 +28,7 @@
     <a href="{{ route('sponsors.create') }}" class="btn btn-primary mb-3">{{ __('interface.add_sponsor') }}</a>
     @endif
 
-    @if(auth()->user()->hasRole('admin'))
+    @if(auth()->check() && auth()->user()->hasRole('admin'))
     <!-- Table des sponsors pour les admins -->
     <table class="table table-bordered">
         <thead>

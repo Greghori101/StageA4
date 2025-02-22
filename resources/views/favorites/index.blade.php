@@ -35,7 +35,7 @@
             id="content-{{ Str::slug($modelType) }}"
             role="tabpanel" aria-labelledby="tab-{{ Str::slug($modelType) }}">
 
-            @if(auth()->user()->hasRole('admin'))
+            @if(auth()->check() && auth()->user()->hasRole('admin'))
             <!-- Admin: Table View -->
             <table class="table table-bordered">
                 <thead>

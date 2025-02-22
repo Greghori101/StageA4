@@ -33,7 +33,7 @@
         <a href="{{ route('users.create') }}" class="btn btn-primary mb-3">{{ __('interface.add_user') }}</a>
     @endif
 
-    @if(auth()->user()->hasRole('admin'))
+    @if(auth()->check() && auth()->user()->hasRole('admin'))
         <!-- Table des utilisateurs pour les admins -->
         <table class="table table-bordered">
             <thead>
