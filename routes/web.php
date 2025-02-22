@@ -11,6 +11,7 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\CommunicationController;
 use App\Http\Controllers\AuthController;
 use App\Models\User;
+use Illuminate\Support\Facades\App;
 
 Route::get('/', function () {
     return view('home.home');
@@ -83,3 +84,9 @@ Route::get('/verify-qr/{id}', function ($id) {
 
     return view('verification.success', compact('user'));
 })->name('verify.qr');
+
+Route::get('locale/{lang}', function ($lang) {
+    session(['applocale' => $lang]);
+    App::setLocale($lang);
+    return back();
+})->name('locale');

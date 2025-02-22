@@ -6,18 +6,18 @@
 
     <div class="card mt-4">
         <div class="card-body">
-            <h5 class="card-title">Détails de la Communication</h5>
+            <h5 class="card-title">{{ __('interface.communication_details') }}</h5>
 
-            <p><strong>Description:</strong> {{ $communication->description ?? 'Aucune description' }}</p>
-            <p><strong>Date:</strong> {{ $communication->date }}</p>
-            <p><strong>Heure de début:</strong> {{ $communication->start_time }}</p>
-            <p><strong>Heure de fin:</strong> {{ $communication->end_time }}</p>
-            <p><strong>Type:</strong> {{ $communication->type }}</p>
+            <p><strong>{{ __('interface.description') }}:</strong> {{ $communication->description ?? __('interface.no_description') }}</p>
+            <p><strong>{{ __('interface.date') }}:</strong> {{ $communication->date }}</p>
+            <p><strong>{{ __('interface.start_time') }}:</strong> {{ $communication->start_time }}</p>
+            <p><strong>{{ __('interface.end_time') }}:</strong> {{ $communication->end_time }}</p>
+            <p><strong>{{ __('interface.type') }}:</strong> {{ $communication->type }}</p>
 
             <hr>
 
             <!-- Program Session -->
-            <h5>Session du Programme</h5>
+            <h5>{{ __('interface.program_session') }}</h5>
             @if ($communication->programSession)
                 <p>
                     <a href="{{ route('program_sessions.show', $communication->programSession) }}">
@@ -25,11 +25,11 @@
                     </a>
                 </p>
             @else
-                <p>Non attribuée</p>
+                <p>{{ __('interface.not_assigned') }}</p>
             @endif
 
             <!-- Room -->
-            <h5>Salle</h5>
+            <h5>{{ __('interface.room') }}</h5>
             @if ($communication->room)
                 <p>
                     <a href="{{ route('rooms.show', $communication->room) }}">
@@ -37,13 +37,13 @@
                     </a>
                 </p>
             @else
-                <p>Non attribuée</p>
+                <p>{{ __('interface.not_assigned') }}</p>
             @endif
 
             <hr>
 
             <!-- Speakers -->
-            <h5>Intervenants</h5>
+            <h5>{{ __('interface.speakers') }}</h5>
             @if ($communication->speakers->isNotEmpty())
                 <div class="row">
                     @foreach ($communication->speakers as $speaker)
@@ -56,13 +56,13 @@
                     @endforeach
                 </div>
             @else
-                <p>Aucun intervenant</p>
+                <p>{{ __('interface.no_speakers') }}</p>
             @endif
 
             <hr>
 
             <!-- Sponsors -->
-            <h5>Sponsors</h5>
+            <h5>{{ __('interface.sponsors') }}</h5>
             @if ($communication->sponsors->isNotEmpty())
                 <div class="row">
                     @foreach ($communication->sponsors as $sponsor)
@@ -75,25 +75,27 @@
                     @endforeach
                 </div>
             @else
-                <p>Aucun sponsor</p>
+                <p>{{ __('interface.no_sponsors') }}</p>
             @endif
         </div>
     </div>
 
     <div class="mt-4">
         @if(auth()->user()->can('update Communication'))
-            <a href="{{ route('communications.edit', $communication) }}" class="btn btn-primary">Modifier</a>
+            <a href="{{ route('communications.edit', $communication) }}" class="btn btn-primary">{{ __('interface.edit') }}</a>
         @endif
 
         @if(auth()->user()->can('delete Communication'))
             <form action="{{ route('communications.destroy', $communication) }}" method="POST" class="d-inline">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette communication ?');">Supprimer</button>
+                <button type="submit" class="btn btn-danger" onclick="return confirm('{{ __('interface.delete_confirmation') }}');">
+                    {{ __('interface.delete') }}
+                </button>
             </form>
         @endif
 
-        <a href="{{ route('communications.index') }}" class="btn btn-secondary">Retour</a>
+        <a href="{{ route('communications.index') }}" class="btn btn-secondary">{{ __('interface.back') }}</a>
     </div>
 </div>
 @endsection

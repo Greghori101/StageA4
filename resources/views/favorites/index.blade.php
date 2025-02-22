@@ -1,18 +1,18 @@
 @extends('base')
 
-@section('title', 'Mes Favoris')
+@section('title', __('interface.my_favorites'))
 
 @section('content')
 <div class="container mt-4">
-    <h2 class="mb-4">Mes Favoris</h2>
+    <h2 class="mb-4">{{ __('interface.my_favorites') }}</h2>
 
     @if(auth()->user()->cannot('read Favorite'))
-        <div class="alert alert-danger">Vous n'avez pas la permission d'accéder à cette page.</div>
+        <div class="alert alert-danger">{{ __('interface.no_permission') }}</div>
         @php abort(403) @endphp
     @endif
 
     @if($favorites->isEmpty())
-        <p>Aucun favori trouvé.</p>
+        <p>{{ __('interface.no_favorites_found') }}</p>
     @else
         <!-- Tabs Navigation -->
         <ul class="nav nav-tabs" id="favoriteTabs" role="tablist">
@@ -40,9 +40,9 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Type</th>
-                                    <th>Titre</th>
-                                    <th>Actions</th>
+                                    <th>{{ __('interface.type') }}</th>
+                                    <th>{{ __('interface.title') }}</th>
+                                    <th>{{ __('interface.actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -59,7 +59,7 @@
                                             <td>
                                                 <form action="{{ route('favorites.toggle', ['modelType' => $favorite->model_type, 'modelId' => $favorite->model_id]) }}" method="POST">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
+                                                    <button type="submit" class="btn btn-sm btn-danger">{{ __('interface.remove') }}</button>
                                                 </form>
                                             </td>
                                         </tr>
@@ -84,23 +84,23 @@
 
                                                 @if($model instanceof App\Models\Communication)
                                                     <p>{{ $model->description }}</p>
-                                                    <p><strong>Date:</strong> {{ $model->date }}</p>
-                                                    <p><strong>Heure:</strong> {{ $model->start_time }} - {{ $model->end_time }}</p>
+                                                    <p><strong>{{ __('interface.date') }}:</strong> {{ $model->date }}</p>
+                                                    <p><strong>{{ __('interface.time') }}:</strong> {{ $model->start_time }} - {{ $model->end_time }}</p>
 
                                                 @elseif($model instanceof App\Models\ProgramSession)
                                                     <p>{{ $model->name }}</p>
-                                                    <p><strong>Date:</strong> {{ $model->date }}</p>
+                                                    <p><strong>{{ __('interface.date') }}:</strong> {{ $model->date }}</p>
 
                                                 @elseif($model instanceof App\Models\Question)
                                                     <p>{{ $model->content }}</p>
-                                                    <p><strong>Réponse:</strong> {{ $model->answer ?? 'Non répondu' }}</p>
+                                                    <p><strong>{{ __('interface.answer') }}:</strong> {{ $model->answer ?? __('interface.not_answered') }}</p>
 
                                                 @elseif($model instanceof App\Models\Speaker)
-                                                    <p><strong>Nom:</strong> {{ $model->full_name }}</p>
+                                                    <p><strong>{{ __('interface.name') }}:</strong> {{ $model->full_name }}</p>
                                                     <p>{{ $model->biography }}</p>
 
                                                 @elseif($model instanceof App\Models\Sponsor)
-                                                    <p><strong>Nom:</strong> {{ $model->name }}</p>
+                                                    <p><strong>{{ __('interface.name') }}:</strong> {{ $model->name }}</p>
                                                     <p>{{ $model->description }}</p>
 
                                                 @endif
@@ -108,7 +108,7 @@
                                                 <!-- Favorite Toggle Button -->
                                                 <form action="{{ route('favorites.toggle', ['modelType' => $favorite->model_type, 'modelId' => $favorite->model_id]) }}" method="POST">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
+                                                    <button type="submit" class="btn btn-sm btn-danger">{{ __('interface.remove') }}</button>
                                                 </form>
                                             </div>
                                         </div>

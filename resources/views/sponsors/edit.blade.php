@@ -1,11 +1,11 @@
 @extends('base')
 
-@section('title', 'Modifier le Sponsor')
+@section('title', __('interface.edit_sponsor'))
 
 @section('content')
 
 <div class="container mt-5">
-    <h1>Modifier le Sponsor</h1>
+    <h1>{{ __('interface.edit_sponsor') }}</h1>
 
     @if ($errors->any())
         <div class="alert alert-danger">
@@ -22,22 +22,22 @@
         @method('PUT')
 
         <div class="mb-3">
-            <label for="name" class="form-label">Nom du Sponsor</label>
+            <label for="name" class="form-label">{{ __('interface.sponsor_name') }}</label>
             <input type="text" id="name" name="name" class="form-control" value="{{ old('name', $sponsor->name) }}" required>
         </div>
 
         <div class="mb-3">
-            <label for="category" class="form-label">Catégorie</label>
+            <label for="category" class="form-label">{{ __('interface.category') }}</label>
             <input type="text" id="category" name="category" class="form-control" value="{{ old('category', $sponsor->category) }}">
         </div>
 
         <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
+            <label for="description" class="form-label">{{ __('interface.description') }}</label>
             <textarea id="description" name="description" class="form-control">{{ old('description', $sponsor->description) }}</textarea>
         </div>
 
         <div class="mb-3">
-            <label for="logo" class="form-label">Logo</label>
+            <label for="logo" class="form-label">{{ __('interface.logo') }}</label>
             <input type="file" id="logo" name="logo" class="form-control">
             @if ($sponsor->logo)
                 <div class="mt-2">
@@ -46,8 +46,8 @@
             @endif
         </div>
 
-        <button type="submit" class="btn btn-success">Mettre à jour</button>
-        <a href="{{ route('sponsors.index') }}" class="btn btn-secondary">Annuler</a>
+        <button type="submit" class="btn btn-success">{{ __('interface.update') }}</button>
+        <a href="{{ route('sponsors.index') }}" class="btn btn-secondary">{{ __('interface.cancel') }}</a>
     </form>
 </div>
 

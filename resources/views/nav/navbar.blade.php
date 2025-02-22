@@ -11,7 +11,7 @@
 <nav class="navbar">
     <div class="container-fluid d-flex align-items-center">
         <!-- Bouton de toggle pour le menu (mobile) -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="{{ __('interface.toggle_navigation') }}">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -25,9 +25,9 @@
         <!-- Authentification -->
         <div class="ms-auto d-flex align-items-center">
             @guest
-            <a href="{{ route('login') }}" class="btn btn-outline-primary">Se connecter</a>
+            <a href="{{ route('login') }}" class="btn btn-outline-primary">{{ __('interface.login') }}</a>
             @else
-            <span class="me-3">Bonjour,</span>
+            <span class="me-3">{{ __('interface.hello') }},</span>
 
             <!-- Dropdown utilisateur -->
             <div class="dropdown">
@@ -35,14 +35,30 @@
                     <span class="dropdown-toggle-text">{{ Auth::user()->surnom ?: Auth::user()->name }}</span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                    <li><a href="{{ route('profile.show') }}" class="dropdown-item">Mon Profil</a></li>
+                    <li><a href="{{ route('profile.show') }}" class="dropdown-item">{{ __('interface.profile') }}</a></li>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
-                        <button type="submit" class="dropdown-item">Se déconnecter</button>
+                        <button type="submit" class="dropdown-item">{{ __('interface.logout') }}</button>
                     </form>
                 </ul>
             </div>
             @endguest
+        </div>
+        <div class="dropdown ms-3">
+            <button class="btn btn-outline-primary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ app()->getLocale() == 'en' ? 'English' : (app()->getLocale() == 'fr' ? 'Français' : 'العربية') }}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+                <li>
+                    <a class="dropdown-item" href="{{ route('locale', 'en') }}">English</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="{{ route('locale', 'fr') }}">Français</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="{{ route('locale', 'ar') }}">العربية</a>
+                </li>
+            </ul>
         </div>
     </div>
 
@@ -50,33 +66,33 @@
     <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             @auth
-                @if(Auth::user()->can('read ProgramSession'))
-                    <li class="nav-item"><a class="nav-link" href="{{ route('program_sessions.index') }}">Programme</a></li>
-                @endif
+            @if(Auth::user()->can('read ProgramSession'))
+            <li class="nav-item"><a class="nav-link" href="{{ route('program_sessions.index') }}">{{ __('interface.program') }}</a></li>
+            @endif
 
-                @if(Auth::user()->can('read Speaker'))
-                    <li class="nav-item"><a class="nav-link" href="{{ route('speakers.index') }}">Orateurs</a></li>
-                @endif
+            @if(Auth::user()->can('read Speaker'))
+            <li class="nav-item"><a class="nav-link" href="{{ route('speakers.index') }}">{{ __('interface.speakers') }}</a></li>
+            @endif
 
-                @if(Auth::user()->can('read Room'))
-                    <li class="nav-item"><a class="nav-link" href="{{ route('rooms.index') }}">Salles</a></li>
-                @endif
+            @if(Auth::user()->can('read Room'))
+            <li class="nav-item"><a class="nav-link" href="{{ route('rooms.index') }}">{{ __('interface.rooms') }}</a></li>
+            @endif
 
-                @if(Auth::user()->can('read Sponsor'))
-                    <li class="nav-item"><a class="nav-link" href="{{ route('sponsors.index') }}">Exposants</a></li>
-                @endif
+            @if(Auth::user()->can('read Sponsor'))
+            <li class="nav-item"><a class="nav-link" href="{{ route('sponsors.index') }}">{{ __('interface.exhibitors') }}</a></li>
+            @endif
 
-                @if(Auth::user()->can('read Question'))
-                    <li class="nav-item"><a class="nav-link" href="{{ route('questions.index') }}">Questions</a></li>
-                @endif
+            @if(Auth::user()->can('read Question'))
+            <li class="nav-item"><a class="nav-link" href="{{ route('questions.index') }}">{{ __('interface.questions') }}</a></li>
+            @endif
 
-                @if(Auth::user()->can('read Favorite'))
-                    <li class="nav-item"><a class="nav-link" href="{{ route('favorites.index') }}">Favoris</a></li>
-                @endif
+            @if(Auth::user()->can('read Favorite'))
+            <li class="nav-item"><a class="nav-link" href="{{ route('favorites.index') }}">{{ __('interface.favorites') }}</a></li>
+            @endif
 
-                @if(Auth::user()->can('read User'))
-                    <li class="nav-item"><a class="nav-link" href="{{ route('users.index') }}">Gérer les utilisateurs</a></li>
-                @endif
+            @if(Auth::user()->can('read User'))
+            <li class="nav-item"><a class="nav-link" href="{{ route('users.index') }}">{{ __('interface.manage_users') }}</a></li>
+            @endif
             @endauth
         </ul>
     </div>

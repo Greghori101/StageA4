@@ -1,16 +1,16 @@
 @extends('base')
 
-@section('title', 'Gestion des Utilisateurs')
+@section('title', __('interface.manage_users'))
 
 @section('content')
 
 <div class="container mt-5">
-    <h1>Gestion des Utilisateurs</h1>
+    <h1>{{ __('interface.manage_users') }}</h1>
 
     @if(auth()->user()->can('update User'))
         {{-- Scan QR Code Button --}}
         <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#qrScannerModal">
-            <i class="fas fa-qrcode"></i> Scanner un QR Code
+            <i class="fas fa-qrcode"></i> {{ __('interface.scan_qr_code') }}
         </button>
     @endif
 
@@ -22,15 +22,15 @@
 
     <form method="GET" action="{{ route('users.index') }}" class="mb-3">
         <div class="input-group">
-            <input type="text" name="search" class="form-control" placeholder="Rechercher par nom ou email" value="{{ request()->query('search') }}">
+            <input type="text" name="search" class="form-control" placeholder="{{ __('interface.search_by_name_email') }}" value="{{ request()->query('search') }}">
             <button class="btn btn-primary" type="submit">
-                <i class="fas fa-search"></i> Rechercher
+                <i class="fas fa-search"></i> {{ __('interface.search') }}
             </button>
         </div>
     </form>
 
     @if(auth()->user()->can('create User'))
-        <a href="{{ route('users.create') }}" class="btn btn-primary mb-3">Ajouter un utilisateur</a>
+        <a href="{{ route('users.create') }}" class="btn btn-primary mb-3">{{ __('interface.add_user') }}</a>
     @endif
 
     @if(auth()->user()->hasRole('admin'))
@@ -39,13 +39,13 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Nom complet</th>
-                    <th>Email</th>
-                    <th>Institution</th>
-                    <th>Adresse</th>
-                    <th>État</th>
-                    <th>Pays</th>
-                    <th>Actions</th>
+                    <th>{{ __('interface.full_name') }}</th>
+                    <th>{{ __('interface.email') }}</th>
+                    <th>{{ __('interface.institution') }}</th>
+                    <th>{{ __('interface.address') }}</th>
+                    <th>{{ __('interface.state') }}</th>
+                    <th>{{ __('interface.country') }}</th>
+                    <th>{{ __('interface.actions') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -60,12 +60,12 @@
                         <td>{{ $user->country }}</td>
                         <td>
                             @if(auth()->user()->can('update User'))
-                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">Modifier</a>
+                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">{{ __('interface.edit') }}</a>
                             @endif
 
                             @if(auth()->user()->can('delete User'))
                                 <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ $user->id }}">
-                                    Supprimer
+                                    {{ __('interface.delete') }}
                                 </button>
 
                                 <!-- Modal de confirmation -->
@@ -73,18 +73,18 @@
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="deleteUserLabel">Confirmer la suppression</h5>
+                                                <h5 class="modal-title" id="deleteUserLabel">{{ __('interface.confirm_delete') }}</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                Voulez-vous vraiment supprimer l'utilisateur "{{ $user->full_name }}" ?
+                                                {{ __('interface.confirm_delete_message', ['user' => $user->full_name]) }}
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('interface.cancel') }}</button>
                                                 <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                                                    <button type="submit" class="btn btn-danger">{{ __('interface.delete') }}</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -104,9 +104,9 @@
                     <div class="card shadow-sm h-100">
                         <div class="card-body">
                             <h5 class="card-title">{{ $user->full_name }}</h5>
-                            <p class="card-text"><strong>Email :</strong> {{ $user->email }}</p>
-                            <p class="card-text"><strong>Institution :</strong> {{ $user->institution ?? 'N/A' }}</p>
-                            <p class="card-text"><strong>Pays :</strong> {{ $user->country }}</p>
+                            <p class="card-text"><strong>{{ __('interface.email') }} :</strong> {{ $user->email }}</p>
+                            <p class="card-text"><strong>{{ __('interface.institution') }} :</strong> {{ $user->institution ?? 'N/A' }}</p>
+                            <p class="card-text"><strong>{{ __('interface.country') }} :</strong> {{ $user->country }}</p>
                         </div>
                     </div>
                 </div>
@@ -125,7 +125,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="qrScannerModalLabel">Scanner un QR Code</h5>
+                <h5 class="modal-title" id="qrScannerModalLabel">{{ __('interface.scan_qr_code') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
@@ -133,7 +133,7 @@
                 <p id="qr-result" class="mt-3 text-success fw-bold"></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('interface.close') }}</button>
             </div>
         </div>
     </div>
@@ -175,7 +175,7 @@
 
                     if (code) {
                         scanning = true;
-                        resultDisplay.textContent = "QR Code détecté : " + code.data;
+                        resultDisplay.textContent = "{{ __('interface.qr_code_detected') }}: " + code.data;
                         window.location.href = "/verify-qr/" + code.data;
                     }
                 }

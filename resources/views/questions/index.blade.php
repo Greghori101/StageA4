@@ -1,37 +1,37 @@
 @extends('base')
 
-@section('title', 'Questions')
+@section('title', __('interface.questions'))
 
 @section('content')
 <div class="container text-center mt-5">
     <!-- Title -->
     <div class="mb-4">
-        <h1 class="text-white p-3" style="background-color: #56B947; border-radius: 10px;">Questions</h1>
+        <h1 class="text-white p-3" style="background-color: #56B947; border-radius: 10px;">{{ __('interface.questions') }}</h1>
     </div>
 
     @if(auth()->check() && auth()->user()->can('create Question'))
-        <a href="{{ route('questions.create') }}" class="btn btn-success mb-3">Poser une question</a>
+        <a href="{{ route('questions.create') }}" class="btn btn-success mb-3">{{ __('interface.ask_question') }}</a>
     @endif
 
     <!-- Question Statistics -->
     <div class="d-flex justify-content-center mb-4">
         @if(auth()->check() && auth()->user()->can('update Question'))
             <div class="p-3 me-2" style="background-color: #F2A341; border-radius: 10px;">
-                <h5>En attente</h5>
+                <h5>{{ __('interface.pending') }}</h5>
                 <span style="font-size: 1.5rem; font-weight: bold;">{{ $pending_count }}</span>
             </div>
         @endif
         <div class="p-3 me-2" style="background-color: #56A6B4; border-radius: 10px;">
-            <h5>Validées</h5>
+            <h5>{{ __('interface.validated') }}</h5>
             <span style="font-size: 1.5rem; font-weight: bold;">{{ $validated_count }}</span>
         </div>
         <div class="p-3 me-2" style="background-color: #4CAF50; border-radius: 10px;">
-            <h5>Traitées</h5>
+            <h5>{{ __('interface.processed') }}</h5>
             <span style="font-size: 1.5rem; font-weight: bold;">{{ $processed_count }}</span>
         </div>
         @if(auth()->check() && auth()->user()->can('update Question'))
             <div class="p-3 ms-2" style="background-color: #E74C3C; border-radius: 10px;">
-                <h5>Rejetées</h5>
+                <h5>{{ __('interface.rejected') }}</h5>
                 <span style="font-size: 1.5rem; font-weight: bold;">{{ $rejected_count }}</span>
             </div>
         @endif
@@ -40,9 +40,9 @@
     @if(auth()->check() && auth()->user()->can('update Question'))
         <!-- Section : Pending Questions -->
         <div class="p-4 mb-4" style="background-color: #F2A341; border-radius: 10px;">
-            <h5 class="text-white">Questions en attente :</h5>
+            <h5 class="text-white">{{ __('interface.pending_questions') }} :</h5>
             @if($pending_questions->isEmpty())
-                <p>Aucune question en attente.</p>
+                <p>{{ __('interface.no_pending_questions') }}</p>
             @else
                 <div class="row">
                     @foreach($pending_questions as $question)
@@ -51,20 +51,20 @@
                                 <div class="card-body">
                                     <strong>{{ $question->content }}</strong>
                                     <br>
-                                    <small>Communication: {{ $question->communication->title ?? 'Non spécifiée' }}</small>
+                                    <small>{{ __('interface.communication') }}: {{ $question->communication->title ?? __('interface.not_specified') }}</small>
                                     @if ($question->speaker)
-                                        <br><small>Intervenant: {{ $question->speaker->name }}</small>
+                                        <br><small>{{ __('interface.speaker') }}: {{ $question->speaker->name }}</small>
                                     @endif
                                     <x-favorite-button modelType="App\Models\Question" :modelId="$question->id" />
 
                                     <div class="mt-2">
                                         <form action="{{ route('questions.validate', $question->id) }}" method="POST" style="display: inline;">
                                             @csrf
-                                            <button type="submit" class="btn btn-success btn-sm">Valider</button>
+                                            <button type="submit" class="btn btn-success btn-sm">{{ __('interface.validate') }}</button>
                                         </form>
                                         <form action="{{ route('questions.reject', $question->id) }}" method="POST" style="display: inline;">
                                             @csrf
-                                            <button type="submit" class="btn btn-danger btn-sm">Rejeter</button>
+                                            <button type="submit" class="btn btn-danger btn-sm">{{ __('interface.reject') }}</button>
                                         </form>
                                     </div>
                                 </div>
@@ -78,9 +78,9 @@
 
     <!-- Section : Validated Questions -->
     <div class="p-4 mb-4" style="background-color: #56A6B4; border-radius: 10px;">
-        <h5 class="text-white">Questions validées :</h5>
+        <h5 class="text-white">{{ __('interface.validated_questions') }} :</h5>
         @if($validated_questions->isEmpty())
-            <p>Aucune question validée.</p>
+            <p>{{ __('interface.no_validated_questions') }}</p>
         @else
             <div class="row">
                 @foreach($validated_questions as $question)
@@ -89,9 +89,9 @@
                             <div class="card-body">
                                 <strong>{{ $question->content }}</strong>
                                 <br>
-                                <small>Communication: {{ $question->communication->title ?? 'Non spécifiée' }}</small>
+                                <small>{{ __('interface.communication') }}: {{ $question->communication->title ?? __('interface.not_specified') }}</small>
                                 @if ($question->speaker)
-                                    <br><small>Intervenant: {{ $question->speaker->name }}</small>
+                                    <br><small>{{ __('interface.speaker') }}: {{ $question->speaker->name }}</small>
                                 @endif
                                 <x-favorite-button modelType="App\Models\Question" :modelId="$question->id" />
 
@@ -99,12 +99,12 @@
                                     <div class="mt-2">
                                         <form action="{{ route('questions.process', $question->id) }}" method="POST" style="display: inline;">
                                             @csrf
-                                            <button type="submit" class="btn btn-success btn-sm">Marquer comme traitée</button>
+                                            <button type="submit" class="btn btn-success btn-sm">{{ __('interface.mark_as_processed') }}</button>
                                         </form>
                                         <form action="{{ route('questions.respond', $question->id) }}" method="POST" style="display: inline;">
                                             @csrf
-                                            <input type="text" name="answer" class="form-control d-inline w-75" placeholder="Répondre">
-                                            <button type="submit" class="btn btn-warning btn-sm">Répondre</button>
+                                            <input type="text" name="answer" class="form-control d-inline w-75" placeholder="{{ __('interface.answer') }}">
+                                            <button type="submit" class="btn btn-warning btn-sm">{{ __('interface.respond') }}</button>
                                         </form>
                                     </div>
                                 @endif
@@ -118,9 +118,9 @@
 
     <!-- Section : Processed Questions -->
     <div class="p-4 mb-4" style="background-color: #4CAF50; border-radius: 10px;">
-        <h5 class="text-white">Questions traitées :</h5>
+        <h5 class="text-white">{{ __('interface.processed_questions') }} :</h5>
         @if($processed_questions->isEmpty())
-            <p>Aucune question traitée.</p>
+            <p>{{ __('interface.no_processed_questions') }}</p>
         @else
             <div class="row">
                 @foreach($processed_questions as $question)
@@ -129,12 +129,12 @@
                             <div class="card-body">
                                 <strong>{{ $question->content }}</strong>
                                 <br>
-                                <small>Communication: {{ $question->communication->title ?? 'Non spécifiée' }}</small>
+                                <small>{{ __('interface.communication') }}: {{ $question->communication->title ?? __('interface.not_specified') }}</small>
                                 @if ($question->speaker)
-                                    <br><small>Intervenant: {{ $question->speaker->name }}</small>
+                                    <br><small>{{ __('interface.speaker') }}: {{ $question->speaker->name }}</small>
                                 @endif
-                                <strong>Réponse:</strong>
-                                <p>{{ $question->answer ?? 'Pas encore de réponse.' }}</p>
+                                <strong>{{ __('interface.answer') }}:</strong>
+                                <p>{{ $question->answer ?? __('interface.no_answer') }}</p>
                                 <x-favorite-button modelType="App\Models\Question" :modelId="$question->id" />
                             </div>
                         </div>

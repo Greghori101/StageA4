@@ -2,35 +2,35 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">Speaker Details</h1>
+    <h1 class="mb-4">{{ __('interface.speaker_details') }}</h1>
 
     <div class="card">
         <div class="card-header">
             <h3>{{ $speaker->full_name }}</h3>
         </div>
         <div class="card-body">
-            <p><strong>Biography:</strong></p>
+            <p><strong>{{ __('interface.biography') }}:</strong></p>
             <p>{{ $speaker->biography }}</p>
 
-            <p><strong>Avatar:</strong></p>
+            <p><strong>{{ __('interface.avatar') }}:</strong></p>
             @if($speaker->getFirstMediaUrl('avatar'))
                 <img src="{{ $speaker->getFirstMediaUrl('avatar') }}" alt="Avatar" class="img-thumbnail" width="150">
             @else
-                <p>No Avatar</p>
+                <p>{{ __('interface.no_avatar') }}</p>
             @endif
 
             <div class="mt-4">
                 <x-favorite-button modelType="App\Models\Speaker" :modelId="$speaker->id" />
 
                 @if(auth()->user()->can('update Speaker'))
-                    <a href="{{ route('speakers.edit', $speaker) }}" class="btn btn-warning">Edit</a>
+                    <a href="{{ route('speakers.edit', $speaker) }}" class="btn btn-warning">{{ __('interface.edit') }}</a>
                 @endif
 
-                <a href="{{ route('speakers.index') }}" class="btn btn-secondary">Back to List</a>
+                <a href="{{ route('speakers.index') }}" class="btn btn-secondary">{{ __('interface.back_to_list') }}</a>
 
                 @if(auth()->user()->can('delete Speaker'))
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteSpeakerModal">
-                        Delete
+                        {{ __('interface.delete') }}
                     </button>
 
                     <!-- Delete Confirmation Modal -->
@@ -38,18 +38,18 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="deleteSpeakerLabel">Confirm Delete</h5>
+                                    <h5 class="modal-title" id="deleteSpeakerLabel">{{ __('interface.confirm_delete') }}</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    Are you sure you want to delete speaker "{{ $speaker->full_name }}"?
+                                    {{ __('interface.delete_speaker_confirmation', ['speaker' => $speaker->full_name]) }}
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('interface.cancel') }}</button>
                                     <form action="{{ route('speakers.destroy', $speaker) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                        <button type="submit" class="btn btn-danger">{{ __('interface.delete') }}</button>
                                     </form>
                                 </div>
                             </div>
@@ -62,10 +62,10 @@
 
     <!-- Questions related to this Speaker -->
     <div class="mt-5">
-        <h4>Questions for {{ $speaker->full_name }}</h4>
+        <h4>{{ __('interface.questions_for', ['speaker' => $speaker->full_name]) }}</h4>
 
         @if($speaker->questions->isEmpty())
-            <p>No questions asked yet.</p>
+            <p>{{ __('interface.no_questions') }}</p>
         @else
             <div class="row">
                 @foreach($speaker->questions as $question)
@@ -74,7 +74,7 @@
                             <div class="card-body">
                                 <strong>{{ $question->content }}</strong>
                                 <br>
-                                <small>Communication: {{ $question->communication->title ?? 'Not specified' }}</small>
+                                <small>{{ __('interface.communication') }}: {{ $question->communication->title ?? __('interface.not_specified') }}</small>
                                 <div class="mt-3">
                                     <x-favorite-button modelType="App\Models\Question" :modelId="$question->id" />
                                 </div>

@@ -2,28 +2,28 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">Communications</h1>
+    <h1 class="mb-4">{{ __('interface.communications') }}</h1>
 
-    @if (auth()->user()->can('create Communication'))
-        <a href="{{ route('communications.create') }}" class="btn btn-primary mb-3">Add New Communication</a>
-    @endif
+    @can('create Communication')
+        <a href="{{ route('communications.create') }}" class="btn btn-primary mb-3">{{ __('interface.add_communication') }}</a>
+    @endcan
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    @if(auth()->user()->can('read Communication'))
+    @can('read Communication')
         @if(auth()->user()->hasRole('admin'))
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Title</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Type</th>
-                        <th>Program Session</th>
-                        <th>Room</th>
-                        <th>Actions</th>
+                        <th>{{ __('interface.title') }}</th>
+                        <th>{{ __('interface.date') }}</th>
+                        <th>{{ __('interface.time') }}</th>
+                        <th>{{ __('interface.type') }}</th>
+                        <th>{{ __('interface.program_session') }}</th>
+                        <th>{{ __('interface.room') }}</th>
+                        <th>{{ __('interface.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -33,51 +33,53 @@
                             <td>{{ $communication->date }}</td>
                             <td>{{ $communication->start_time }} - {{ $communication->end_time }}</td>
                             <td>{{ ucfirst($communication->type) }}</td>
-                            <td>{{ $communication->programSession?->name ?? 'N/A' }}</td>
-                            <td>{{ $communication->room?->name ?? 'N/A' }}</td>
+                            <td>{{ $communication->programSession?->name ?? __('interface.na') }}</td>
+                            <td>{{ $communication->room?->name ?? __('interface.na') }}</td>
                             <td>
                                 <x-favorite-button modelType="App\Models\Communication" :modelId="$communication->id" />
-                                <a href="{{ route('communications.show', $communication) }}" class="btn btn-info btn-sm">View</a>
+                                <a href="{{ route('communications.show', $communication) }}" class="btn btn-info btn-sm">{{ __('interface.view') }}</a>
 
-                                @if(auth()->user()->can('update Communication'))
-                                    <a href="{{ route('communications.edit', $communication) }}" class="btn btn-warning btn-sm">Edit</a>
-                                @endif
+                                @can('update Communication')
+                                    <a href="{{ route('communications.edit', $communication) }}" class="btn btn-warning btn-sm">{{ __('interface.edit') }}</a>
+                                @endcan
 
-                                @if(auth()->user()->can('delete Communication'))
-                                    <form action="{{ route('communications.destroy', $communication) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?');">
+                                @can('delete Communication')
+                                    <form action="{{ route('communications.destroy', $communication) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('interface.confirm_delete') }}');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        <button type="submit" class="btn btn-danger btn-sm">{{ __('interface.delete') }}</button>
                                     </form>
-                                @endif
+                                @endcan
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center">No communications found.</td>
+                            <td colspan="7" class="text-center">{{ __('interface.no_communications') }}</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         @else
             <div class="row">
-                @foreach ($communications as $communication)
+                @forelse ($communications as $communication)
                     <div class="col-md-4 mb-4">
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">{{ $communication->title }}</h5>
-                                <p class="card-text"><strong>Date:</strong> {{ $communication->date }}</p>
-                                <p class="card-text"><strong>Time:</strong> {{ $communication->start_time }} - {{ $communication->end_time }}</p>
-                                <p class="card-text"><strong>Type:</strong> {{ ucfirst($communication->type) }}</p>
-                                <p class="card-text"><strong>Room:</strong> {{ $communication->room?->name ?? 'N/A' }}</p>
-                                <a href="{{ route('communications.show', $communication) }}" class="btn btn-info btn-sm">View</a>
+                                <p class="card-text"><strong>{{ __('interface.date') }}:</strong> {{ $communication->date }}</p>
+                                <p class="card-text"><strong>{{ __('interface.time') }}:</strong> {{ $communication->start_time }} - {{ $communication->end_time }}</p>
+                                <p class="card-text"><strong>{{ __('interface.type') }}:</strong> {{ ucfirst($communication->type) }}</p>
+                                <p class="card-text"><strong>{{ __('interface.room') }}:</strong> {{ $communication->room?->name ?? __('interface.na') }}</p>
+                                <a href="{{ route('communications.show', $communication) }}" class="btn btn-info btn-sm">{{ __('interface.view') }}</a>
                             </div>
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <p class="text-center">{{ __('interface.no_communications') }}</p>
+                @endforelse
             </div>
         @endif
-    @endif
+    @endcan
 
     <div class="d-flex justify-content-center">
         {{ $communications->links() }}

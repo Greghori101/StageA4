@@ -5,9 +5,9 @@
 @section('content')
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1>Speakers</h1>
+        <h1>{{ __('interface.speakers') }}</h1>
         @if(auth()->user()->can('create Speaker'))
-            <a href="{{ route('speakers.create') }}" class="btn btn-primary">Add New Speaker</a>
+            <a href="{{ route('speakers.create') }}" class="btn btn-primary">{{ __('interface.add_new_speaker') }}</a>
         @endif
     </div>
 
@@ -23,10 +23,10 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Full Name</th>
-                            <th>Biography</th>
-                            <th>Avatar</th>
-                            <th>Actions</th>
+                            <th>{{ __('interface.full_name') }}</th>
+                            <th>{{ __('interface.biography') }}</th>
+                            <th>{{ __('interface.avatar') }}</th>
+                            <th>{{ __('interface.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -39,20 +39,20 @@
                                 @if($speaker->getFirstMediaUrl('avatar'))
                                     <img src="{{ $speaker->getFirstMediaUrl('avatar') }}" alt="Avatar" width="50">
                                 @else
-                                    No Avatar
+                                    {{ __('interface.no_avatar') }}
                                 @endif
                             </td>
                             <td>
                                 <x-favorite-button modelType="App\Models\Speaker" :modelId="$speaker->id" />
-                                <a href="{{ route('speakers.show', $speaker) }}" class="btn btn-info btn-sm">View</a>
+                                <a href="{{ route('speakers.show', $speaker) }}" class="btn btn-info btn-sm">{{ __('interface.view') }}</a>
 
                                 @if(auth()->user()->can('update Speaker'))
-                                    <a href="{{ route('speakers.edit', $speaker) }}" class="btn btn-warning btn-sm">Edit</a>
+                                    <a href="{{ route('speakers.edit', $speaker) }}" class="btn btn-warning btn-sm">{{ __('interface.edit') }}</a>
                                 @endif
 
                                 @if(auth()->user()->can('delete Speaker'))
                                     <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteSpeakerModal{{ $speaker->id }}">
-                                        Delete
+                                        {{ __('interface.delete') }}
                                     </button>
 
                                     <!-- Delete Confirmation Modal -->
@@ -60,18 +60,18 @@
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="deleteSpeakerLabel">Confirm Delete</h5>
+                                                    <h5 class="modal-title" id="deleteSpeakerLabel">{{ __('interface.confirm_delete') }}</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    Are you sure you want to delete speaker "{{ $speaker->full_name }}"?
+                                                    {{ __('interface.delete_speaker_confirmation', ['speaker' => $speaker->full_name]) }}
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('interface.cancel') }}</button>
                                                     <form action="{{ route('speakers.destroy', $speaker) }}" method="POST" class="d-inline">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                        <button type="submit" class="btn btn-danger">{{ __('interface.delete') }}</button>
                                                     </form>
                                                 </div>
                                             </div>
@@ -95,11 +95,11 @@
                             @if($speaker->getFirstMediaUrl('avatar'))
                                 <img src="{{ $speaker->getFirstMediaUrl('avatar') }}" alt="Avatar" class="img-fluid rounded-circle mb-2" width="100">
                             @else
-                                <div class="mb-2">No Avatar</div>
+                                <div class="mb-2">{{ __('interface.no_avatar') }}</div>
                             @endif
                             <h5 class="card-title">{{ $speaker->full_name }}</h5>
                             <p>{{ Str::limit($speaker->biography, 100) }}</p>
-                            <a href="{{ route('speakers.show', $speaker) }}" class="btn btn-info btn-sm">View</a>
+                            <a href="{{ route('speakers.show', $speaker) }}" class="btn btn-info btn-sm">{{ __('interface.view') }}</a>
                             <x-favorite-button modelType="App\Models\Speaker" :modelId="$speaker->id" />
                         </div>
                     </div>

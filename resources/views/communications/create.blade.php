@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h1>Créer une Communication</h1>
+    <h1>{{ __('interface.create_communication') }}</h1>
 
     @php $communication = $communication ?? null; @endphp
 
@@ -10,39 +10,39 @@
         @csrf
 
         <div class="mb-3">
-            <label for="title" class="form-label">Titre</label>
+            <label for="title" class="form-label">{{ __('interface.title') }}</label>
             <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}" required>
         </div>
 
         <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
+            <label for="description" class="form-label">{{ __('interface.description') }}</label>
             <textarea class="form-control" id="description" name="description">{{ old('description') }}</textarea>
         </div>
 
         <div class="mb-3">
-            <label for="date" class="form-label">Date</label>
+            <label for="date" class="form-label">{{ __('interface.date') }}</label>
             <input type="date" class="form-control" id="date" name="date" value="{{ old('date') }}" required>
         </div>
 
         <div class="mb-3">
-            <label for="start_time" class="form-label">Heure de début</label>
+            <label for="start_time" class="form-label">{{ __('interface.start_time') }}</label>
             <input type="time" class="form-control" id="start_time" name="start_time" value="{{ old('start_time') }}" required>
         </div>
 
         <div class="mb-3">
-            <label for="end_time" class="form-label">Heure de fin</label>
+            <label for="end_time" class="form-label">{{ __('interface.end_time') }}</label>
             <input type="time" class="form-control" id="end_time" name="end_time" value="{{ old('end_time') }}" required>
         </div>
 
         <div class="mb-3">
-            <label for="type" class="form-label">Type</label>
+            <label for="type" class="form-label">{{ __('interface.type') }}</label>
             <input type="text" class="form-control" id="type" name="type" value="{{ old('type') }}" required>
         </div>
 
         <div class="mb-3">
-            <label for="program_session_id" class="form-label">Session du Programme</label>
+            <label for="program_session_id" class="form-label">{{ __('interface.program_session') }}</label>
             <select class="form-select" id="program_session_id" name="program_session_id">
-                <option value="">Sélectionner</option>
+                <option value="">{{ __('interface.select') }}</option>
                 @foreach($programSessions as $session)
                     <option value="{{ $session->id }}" {{ old('program_session_id') == $session->id ? 'selected' : '' }}>
                         {{ $session->name }}
@@ -52,9 +52,9 @@
         </div>
 
         <div class="mb-3">
-            <label for="room_id" class="form-label">Salle</label>
+            <label for="room_id" class="form-label">{{ __('interface.room') }}</label>
             <select class="form-select" id="room_id" name="room_id">
-                <option value="">Sélectionner</option>
+                <option value="">{{ __('interface.select') }}</option>
                 @foreach($rooms as $room)
                     <option value="{{ $room->id }}" {{ old('room_id') == $room->id ? 'selected' : '' }}>
                         {{ $room->name }}
@@ -63,9 +63,8 @@
             </select>
         </div>
 
-        <!-- Sélection des intervenants -->
         <div class="mb-3">
-            <label for="speakers" class="form-label">Intervenants</label>
+            <label for="speakers" class="form-label">{{ __('interface.speakers') }}</label>
             <select class="form-select" id="speakers" name="speakers[]" multiple size="5">
                 @foreach($speakers as $speaker)
                     <option value="{{ $speaker->id }}" {{ collect(old('speakers', []))->contains($speaker->id) ? 'selected' : '' }}>
@@ -73,12 +72,11 @@
                     </option>
                 @endforeach
             </select>
-            <small class="text-muted">Maintenez la touche <strong>CTRL</strong> (ou <strong>CMD</strong> sur Mac) pour sélectionner plusieurs intervenants.</small>
+            <small class="text-muted">{{ __('interface.multi_select_hint') }}</small>
         </div>
 
-        <!-- Sélection des sponsors -->
         <div class="mb-3">
-            <label for="sponsors" class="form-label">Sponsors</label>
+            <label for="sponsors" class="form-label">{{ __('interface.sponsors') }}</label>
             <select class="form-select" id="sponsors" name="sponsors[]" multiple size="5">
                 @foreach($sponsors as $sponsor)
                     <option value="{{ $sponsor->id }}" {{ collect(old('sponsors', []))->contains($sponsor->id) ? 'selected' : '' }}>
@@ -86,10 +84,10 @@
                     </option>
                 @endforeach
             </select>
-            <small class="text-muted">Maintenez la touche <strong>CTRL</strong> (ou <strong>CMD</strong> sur Mac) pour sélectionner plusieurs sponsors.</small>
+            <small class="text-muted">{{ __('interface.multi_select_hint') }}</small>
         </div>
 
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
+        <button type="submit" class="btn btn-primary">{{ __('interface.save') }}</button>
     </form>
 </div>
 @endsection

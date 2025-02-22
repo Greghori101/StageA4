@@ -25,11 +25,6 @@
         <p style="color: #374151;">📌 Vous pouvez également scanner ce QR Code pour vérifier votre compte :</p>
         <img src="{{ asset('storage/qrcodes/user_' . $user->id . '.png') }}" alt="QR Code" style="width: 150px; margin: 10px auto; display: block; border-radius: 5px;">
 
-        <a href="{{ route('verify.qr', ['id' => $user->id]) }}"
-           style="display: inline-block; background-color: #3b82f6; color: white; text-decoration: none; padding: 12px 20px; border-radius: 5px; font-size: 16px; margin-top: 10px;">
-           ✅ Vérifier mon compte
-        </a>
-
         <p style="color: #6b7280; margin-top: 20px;">Cordialement,</p>
         <p style="color: #6b7280;">L'équipe</p>
 

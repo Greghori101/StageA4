@@ -1,11 +1,11 @@
 @extends('base')
 
-@section('title', 'Gestion des Sessions')
+@section('title', __('interface.manage_sessions'))
 
 @section('content')
 
 <div class="container mt-5">
-    <h1>Gestion des Sessions</h1>
+    <h1>{{ __('interface.manage_sessions') }}</h1>
 
     <!-- Message de succès -->
     @if(session('success'))
@@ -17,16 +17,16 @@
     <!-- Formulaire de recherche -->
     <form method="GET" action="{{ route('program_sessions.index') }}" class="mb-3">
         <div class="input-group">
-            <input type="text" name="search" class="form-control" placeholder="Rechercher par nom ou date" value="{{ request()->query('search') }}">
+            <input type="text" name="search" class="form-control" placeholder="{{ __('interface.search_by_name_or_date') }}" value="{{ request()->query('search') }}">
             <button class="btn btn-primary" type="submit">
-                <i class="fas fa-search"></i> Rechercher
+                <i class="fas fa-search"></i> {{ __('interface.search') }}
             </button>
         </div>
     </form>
 
     <!-- Bouton pour ajouter une nouvelle session (Admin uniquement) -->
     @if(auth()->user()->can('create ProgramSession'))
-        <a href="{{ route('program_sessions.create') }}" class="btn btn-primary mb-3">Ajouter une session</a>
+        <a href="{{ route('program_sessions.create') }}" class="btn btn-primary mb-3">{{ __('interface.add_session') }}</a>
     @endif
 
     @if(auth()->user()?->hasRole('admin'))
@@ -35,12 +35,12 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Nom</th>
-                    <th>Date</th>
-                    <th>Heure de début</th>
-                    <th>Heure de fin</th>
-                    <th>Communications</th>
-                    <th>Actions</th>
+                    <th>{{ __('interface.name') }}</th>
+                    <th>{{ __('interface.date') }}</th>
+                    <th>{{ __('interface.start_time') }}</th>
+                    <th>{{ __('interface.end_time') }}</th>
+                    <th>{{ __('interface.communications') }}</th>
+                    <th>{{ __('interface.actions') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -63,22 +63,22 @@
                             @endforeach
                         </ul>
                         @else
-                        <span class="text-muted">Aucune</span>
+                        <span class="text-muted">{{ __('interface.none') }}</span>
                         @endif
                     </td>
                     <td>
                         <x-favorite-button modelType="App\Models\ProgramSession" :modelId="$session->id" />
-                        <a href="{{ route('program_sessions.show', $session->id) }}" class="btn btn-info btn-sm">Voir</a>
+                        <a href="{{ route('program_sessions.show', $session->id) }}" class="btn btn-info btn-sm">{{ __('interface.view') }}</a>
 
                         @if(auth()->user()->can('update ProgramSession'))
-                            <a href="{{ route('program_sessions.edit', $session->id) }}" class="btn btn-warning btn-sm">Modifier</a>
+                            <a href="{{ route('program_sessions.edit', $session->id) }}" class="btn btn-warning btn-sm">{{ __('interface.edit') }}</a>
                         @endif
 
                         @if(auth()->user()->can('delete ProgramSession'))
                             <form action="{{ route('program_sessions.destroy', $session->id) }}" method="POST" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Supprimer cette session ?')">Supprimer</button>
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('{{ __('interface.delete_session_confirmation') }}')">{{ __('interface.delete') }}</button>
                             </form>
                         @endif
                     </td>
@@ -94,15 +94,15 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title">{{ $session->name }}</h5>
-                        <p class="card-text"><strong>Date :</strong> {{ $session->date }}</p>
-                        <p class="card-text"><strong>Heure :</strong> {{ $session->start_time }} - {{ $session->end_time }}</p>
+                        <p class="card-text"><strong>{{ __('interface.date') }} :</strong> {{ $session->date }}</p>
+                        <p class="card-text"><strong>{{ __('interface.time') }} :</strong> {{ $session->start_time }} - {{ $session->end_time }}</p>
 
                         <x-favorite-button modelType="App\Models\ProgramSession" :modelId="$session->id" />
 
-                        <a href="{{ route('program_sessions.show', $session->id) }}" class="btn btn-info btn-sm">Voir</a>
+                        <a href="{{ route('program_sessions.show', $session->id) }}" class="btn btn-info btn-sm">{{ __('interface.view') }}</a>
 
                         @if(auth()->user()->can('create Question'))
-                            <a href="{{ route('questions.create', ['session_id' => $session->id]) }}" class="btn btn-primary btn-sm">Poser une question</a>
+                            <a href="{{ route('questions.create', ['session_id' => $session->id]) }}" class="btn btn-primary btn-sm">{{ __('interface.ask_question') }}</a>
                         @endif
                     </div>
                 </div>

@@ -1,10 +1,10 @@
 @extends('base')
 
-@section('title', 'Modifier le Profil')
+@section('title', __('interface.edit_profile'))
 
 @section('content')
 <div class="container mt-4">
-    <h2 class="mb-4">Modifier le Profil</h2>
+    <h2 class="mb-4">{{ __('interface.edit_profile') }}</h2>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -23,64 +23,64 @@
 
         <!-- Nom complet -->
         <div class="mb-3">
-            <label class="form-label">Nom Complet</label>
+            <label class="form-label">{{ __('interface.full_name') }}</label>
             <input type="text" name="full_name" class="form-control" value="{{ $user->full_name }}" required>
         </div>
 
         <!-- Surnom -->
         <div class="mb-3">
-            <label class="form-label">Surnom</label>
+            <label class="form-label">{{ __('interface.nickname') }}</label>
             <input type="text" name="nickname" class="form-control" value="{{ $user->nickname }}">
         </div>
 
         <!-- Email -->
         <div class="mb-3">
-            <label class="form-label">Email</label>
+            <label class="form-label">{{ __('interface.email') }}</label>
             <input type="email" name="email" class="form-control" value="{{ $user->email }}" required>
         </div>
 
         <!-- Métier -->
         <div class="mb-3">
-            <label class="form-label">Métier</label>
+            <label class="form-label">{{ __('interface.job_title') }}</label>
             <input type="text" name="job_title" class="form-control" value="{{ $user->job_title }}">
         </div>
 
         <!-- Institution -->
         <div class="mb-3">
-            <label class="form-label">Institution</label>
+            <label class="form-label">{{ __('interface.institution') }}</label>
             <input type="text" name="institution" class="form-control" value="{{ $user->institution }}">
         </div>
 
         <!-- Adresse -->
         <div class="mb-3">
-            <label class="form-label">Adresse</label>
+            <label class="form-label">{{ __('interface.address') }}</label>
             <input type="text" name="address" class="form-control" value="{{ $user->address }}">
         </div>
 
         <!-- Pays -->
         <div class="mb-3">
-            <label class="form-label">Pays</label>
+            <label class="form-label">{{ __('interface.country') }}</label>
             <input type="text" name="country" class="form-control" value="{{ $user->country }}">
         </div>
 
         <!-- État -->
         <div class="mb-3">
-            <label class="form-label">État / Région</label>
+            <label class="form-label">{{ __('interface.state') }}</label>
             <input type="text" name="state" class="form-control" value="{{ $user->state }}">
         </div>
 
         <!-- Mot de passe -->
         <div class="mb-3">
-            <label class="form-label">Nouveau Mot de Passe (laisser vide pour ne pas changer)</label>
+            <label class="form-label">{{ __('interface.new_password') }}</label>
             <input type="password" name="password" class="form-control">
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Confirmer le Mot de Passe</label>
+            <label class="form-label">{{ __('interface.confirm_password') }}</label>
             <input type="password" name="password_confirmation" class="form-control">
         </div>
 
-        <button type="submit" class="btn btn-primary">Mettre à Jour</button>
+        <button type="submit" class="btn btn-primary">{{ __('interface.update') }}</button>
     </form>
 </div>
 @endsection
