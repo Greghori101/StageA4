@@ -57,7 +57,7 @@ class CommunicationController extends Controller
         // Ensure communication time is within the session time
         if ($request->program_session_id) {
             $session = ProgramSession::find($request->program_session_id);
-            if ($session && ($request->start_time < $session->start_time || $request->end_time > $session->end_time)) {
+            if ($session && ($request->start_time <= $session->start_time || $request->end_time >= $session->end_time)) {
                 return redirect()->back()->withErrors(['time' => 'La communication doit respecter le temps de la session.']);
             }
         }
@@ -119,7 +119,7 @@ class CommunicationController extends Controller
         // Ensure communication time is within the session time
         if ($request->program_session_id) {
             $session = ProgramSession::find($request->program_session_id);
-            if ($session && ($request->start_time < $session->start_time || $request->end_time > $session->end_time)) {
+            if ($session && ($request->start_time <= $session->start_time || $request->end_time >= $session->end_time)) {
                 return redirect()->back()->withErrors(['time' => 'La communication doit respecter le temps de la session.']);
             }
         }
