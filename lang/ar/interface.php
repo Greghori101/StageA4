@@ -196,5 +196,8 @@ return [
     'pharmaceutical_industry_suppliers' => 'موردو صناعة الأدوية',
     'institutions_partners' => 'المؤسسات والشركات والشركاء الاجتماعيين',
     'speaker_optional' => 'المتحدث (اختياري)',
-'room' => 'غرفة',
+    'room' => 'غرفة',
+    'rejected_questions' => 'الأسئلة المرفوضة',
+    'select' => 'اختر',
+    
 ];

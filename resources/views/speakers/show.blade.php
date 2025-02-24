@@ -13,8 +13,8 @@
             <p>{{ $speaker->biography }}</p>
 
             <p><strong>{{ __('interface.avatar') }}:</strong></p>
-            @if($speaker->getFirstMediaUrl('avatar'))
-                <img src="{{ $speaker->getFirstMediaUrl('avatar') }}" alt="Avatar" class="img-thumbnail" width="150">
+            @if($speaker->getFirstMediaUrl('photo'))
+                <img src="{{ $speaker->getFirstMediaUrl('photo') }}" alt="Avatar" class="img-thumbnail" width="150">
             @else
                 <p>{{ __('interface.no_avatar') }}</p>
             @endif

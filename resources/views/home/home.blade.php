@@ -4,16 +4,8 @@
 
 @section('content')
 
-<!-- Image stockée localement dans le dossier public -->
-<div class="text-center">
-    <a href="{{ asset('images/plan.jpg') }}" data-lightbox="image-1" data-title="{{ __('interface.event_plan') }}">
-        <img src="{{ asset('images/plan.jpg') }}" alt="{{ __('interface.event_plan') }}" style="margin-top: 20px; width: 500px; height: 300px;">
-    </a>
-</div>
-
-<!-- Contenu principal -->
-<div class="container text-center" style="margin-top: 50px; padding-bottom: 80px;">
-    <!-- Grille pour les boutons -->
+<!-- Main Content -->
+<div class="container text-center mt-5 pb-5">
     <div class="row justify-content-center">
         @php
             $buttons = [
@@ -27,17 +19,22 @@
         @endphp
 
         @foreach ($buttons as $btn)
-            <div class="col-sm-6 col-md-5 mb-4">
-                <div class="card-body">
-                    <a href="{{ isset($btn['external']) ? $btn['route'] : route($btn['route']) }}"
-                       class="btn {{ $btn['class'] }} w-100"
-                       @isset($btn['external']) target="_blank" @endisset>
-                        <i class="{{ $btn['icon'] }}"></i> {{ $btn['text'] }}
-                    </a>
-                </div>
+            <div class="col-6 col-md-4 mb-3">
+                <a href="{{ isset($btn['external']) ? $btn['route'] : route($btn['route']) }}"
+                   class="btn {{ $btn['class'] }} w-100 d-flex align-items-center justify-content-center py-3"
+                   @isset($btn['external']) target="_blank" @endisset>
+                    <i class="{{ $btn['icon'] }} me-2"></i> {{ $btn['text'] }}
+                </a>
             </div>
         @endforeach
     </div>
+</div>
+
+<!-- Image Plan (Lightbox) -->
+<div class="text-center w-full flex">
+    <a class="mx-auto" href="{{ asset('images/plan.jpg') }}" data-lightbox="image-1" data-title="{{ __('interface.event_plan') }}">
+        <img src="{{ asset('images/plan.jpg') }}" alt="{{ __('interface.event_plan') }}" class="img-fluid mt-3 max-w-md">
+    </a>
 </div>
 
 @endsection

@@ -1,62 +1,75 @@
 <head>
     <style>
         .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 10px 20px;
         }
 
-        .navbar .container-fluid {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            align-items: center;
-        }
-
-        .navbar .navbar-brand {
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: #ff5733;
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 1.8rem;
-            letter-spacing: 1px;
-            color: #e0e0e0;
         }
 
-        .dropdown-toggle-text {
-            color: #ff5733;
+
+
+        .navbar-toggler {
+            border: none;
+            background: transparent;
+        }
+
+        .navbar-toggler:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .dropdown-menu {
+            min-width: 200px;
+        }
+
+        /* Force burger menu to always be used */
+        .navbar-collapse {
+            display: none !important;
+
+        }
+
+        .show-menu .navbar-collapse {
+            display: block !important;
         }
     </style>
 </head>
+
 <nav class="navbar">
-    <div class="container-fluid d-flex align-items-center">
-        <!-- Bouton de toggle pour le menu (mobile) -->
-        @if(auth()->check())
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="{{ __('interface.toggle_navigation') }}">
+    <div class="container-fluid d-flex align-items-center justify-content-between">
+        <!-- Toggle Button (Always Used) -->
+        <button class="navbar-toggler" type="button" id="burgerMenuToggle">
             <span class="navbar-toggler-icon"></span>
         </button>
-        @endif
 
-        <!-- Titre de la navbar (centré) -->
-        <div class="text-center">
-            <a class="navbar-brand fw-bold text-uppercase" href="{{ route('home') }}">
-                {{ config('app.name') }}
-            </a>
-        </div>
+        <!-- Centered Navbar Brand -->
+        <a class="navbar-brand text-uppercase" href="{{ route('home') }}">
+            {{ config('app.name') }}
+        </a>
 
-        <!-- Authentification -->
+        <!-- Authentication & Language -->
         <div class="ms-auto d-flex align-items-center">
             @guest
             <a href="{{ route('login') }}" class="btn btn-outline-primary">{{ __('interface.login') }}</a>
             @else
-            <span class="me-3">{{ __('interface.hello',['name'=> Auth::user()->nickname ?: Auth::user()->name]) }},</span>
+            <span class="me-3">{{ __('interface.hello', ['name' => Auth::user()->nickname ?: Auth::user()->name]) }},</span>
 
-            <!-- Dropdown utilisateur -->
+            <!-- User Dropdown -->
             <div class="dropdown">
-                <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
                     <span class="dropdown-toggle-text">{{ Auth::user()->nickname ?: Auth::user()->name }}</span>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                    <li><a href="{{ route('profile.show') }}" class="dropdown-item">{{ __('interface.profile') }}</a></li>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="{{ route('profile.show') }}">{{ __('interface.profile') }}</a></li>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="dropdown-item">{{ __('interface.logout') }}</button>
@@ -65,44 +78,31 @@
             </div>
             @endguest
         </div>
-        <div class="dropdown ms-3">
-            <button class="btn btn-outline-primary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                {{ app()->getLocale() == 'en' ? 'English' : (app()->getLocale() == 'fr' ? 'Français' : 'العربية') }}
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
-                <li>
-                    <a class="dropdown-item" href="{{ route('locale', 'en') }}">English</a>
-                </li>
-                <li>
-                    <a class="dropdown-item" href="{{ route('locale', 'fr') }}">Français</a>
-                </li>
-                <li>
-                    <a class="dropdown-item" href="{{ route('locale', 'ar') }}">العربية</a>
-                </li>
-            </ul>
-        </div>
     </div>
 
-    <!-- Menu principal -->
-    <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+    <!-- Collapsible Menu (Always Hidden Until Clicked) -->
+    <div class="navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav p-4">
             @auth
-            @if(auth()->check() && Auth::user()->can('read ProgramSession'))
+            @can('read ProgramSession')
             <li class="nav-item"><a class="nav-link" href="{{ route('program_sessions.index') }}">{{ __('interface.program') }}</a></li>
-            @endif
-
-            @if(auth()->check() && Auth::user()->can('read Speaker'))
+            @endcan
+            @can('read Speaker')
             <li class="nav-item"><a class="nav-link" href="{{ route('speakers.index') }}">{{ __('interface.speakers') }}</a></li>
-            @endif
-
-            @if(auth()->check() && Auth::user()->can('read Room'))
+            @endcan
+            @can('read Room')
             <li class="nav-item"><a class="nav-link" href="{{ route('rooms.index') }}">{{ __('interface.rooms') }}</a></li>
-            @endif
-
-            @if(auth()->check() && Auth::user()->can('read User'))
+            @endcan
+            @can('read User')
             <li class="nav-item"><a class="nav-link" href="{{ route('users.index') }}">{{ __('interface.manage_users') }}</a></li>
-            @endif
+            @endcan
             @endauth
         </ul>
     </div>
 </nav>
+
+<script>
+    document.getElementById('burgerMenuToggle').addEventListener('click', function() {
+        document.querySelector('nav').classList.toggle('show-menu');
+    });
+</script>

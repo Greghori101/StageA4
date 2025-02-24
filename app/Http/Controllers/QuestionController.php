@@ -39,10 +39,19 @@ class QuestionController extends Controller
     public function create(Request $request)
     {
         $communications = Communication::all();
-        $speakers = Speaker::all();
-
-        return view('questions.create', compact('communications', 'speakers'));
+        $selectedCommunicationId = $request->input('communication_id'); 
+        $speakers = collect(); // Default empty collection
+    
+        if ($selectedCommunicationId) {
+            $communication = Communication::find($selectedCommunicationId);
+            if ($communication) {
+                $speakers = $communication->speakers; // Get only related speakers
+            }
+        }
+    
+        return view('questions.create', compact('communications', 'speakers', 'selectedCommunicationId'));
     }
+    
 
     public function store(Request $request)
     {

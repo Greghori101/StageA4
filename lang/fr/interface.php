@@ -196,5 +196,8 @@ return [
     'pharmaceutical_industry_suppliers' => 'Fournisseurs industrie pharmaceutiques',
     'institutions_partners' => 'Institutions, corporations & partenaires sociaux',
     'speaker_optional' => 'Intervenant (Optionnel)',
-'room' => 'Salle',
+    'room' => 'Salle',
+    'rejected_questions' => 'Questions rejetées',
+    'select' => 'Sélectionner',
+    
 ];

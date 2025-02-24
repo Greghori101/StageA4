@@ -10,27 +10,27 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="{{ asset('assets/app.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/styles.css') }}"> <!-- Nouveau fichier pour le CSS -->
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Bootstrap (si nécessaire) -->
-    <link rel="stylesheet" href="{{ asset('lib/bootstrap/css/bootstrap.css') }}">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{{ asset('assets/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/styles.css') }}">
 </head>
 
-<body>
+<body class="bg-gray-100 text-gray-900 font-figtree">
 
-    <!-- Conteneur principal -->
-    <div class="app-container">
+    <!-- Main Container -->
+    <div class="min-h-screen flex flex-col">
         <!-- Navbar -->
         @include('nav/navbar')
 
-        <!-- Contenu principal -->
-        <main class="content">
+        <!-- Main Content -->
+        <main class="flex-1 container mx-auto p-4">
             @yield('content')
         </main>
 
-        <!-- Navbar sticky en bas -->
+        <!-- Sticky Bottom Navbar -->
         @include('nav/navbar-bottom')
     </div>
 

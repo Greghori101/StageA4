@@ -36,8 +36,8 @@
                             <td>{{ $speaker->full_name }}</td>
                             <td>{{ Str::limit($speaker->biography, 50) }}</td>
                             <td>
-                                @if($speaker->getFirstMediaUrl('avatar'))
-                                    <img src="{{ $speaker->getFirstMediaUrl('avatar') }}" alt="Avatar" width="50">
+                                @if($speaker->getFirstMediaUrl('photo'))
+                                    <img src="{{ $speaker->getFirstMediaUrl('photo') }}" alt="Avatar" width="50">
                                 @else
                                     {{ __('interface.no_avatar') }}
                                 @endif

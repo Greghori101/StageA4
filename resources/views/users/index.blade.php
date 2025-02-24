@@ -7,12 +7,12 @@
 <div class="container mt-5">
     <h1>{{ __('interface.manage_users') }}</h1>
 
-    @if(auth()->check() && auth()->user()->can('update User'))
+    <!-- @if(auth()->check() && auth()->user()->can('update User'))
         {{-- Scan QR Code Button --}}
         <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#qrScannerModal">
             <i class="fas fa-qrcode"></i> {{ __('interface.scan_qr_code') }}
         </button>
-    @endif
+    @endif -->
 
     @if(session('success'))
         <div class="alert alert-success">

@@ -46,7 +46,7 @@
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $sponsor->name }}</td>
-                <td>{{ $sponsor->category ?? __('interface.not_available') }}</td>
+                <td>{{ __('interface.'.$sponsor->category) ?? __('interface.not_available') }}</td>
                 <td>{{ Str::limit($sponsor->description, 50, '...') }}</td>
                 <td>
                     @if ($sponsor->getFirstMediaUrl('logo'))
