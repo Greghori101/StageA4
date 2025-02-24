@@ -47,9 +47,11 @@
 <nav class="navbar">
     <div class="container-fluid d-flex align-items-center justify-content-between">
         <!-- Toggle Button (Always Used) -->
+        @auth
         <button class="navbar-toggler" type="button" id="burgerMenuToggle">
             <span class="navbar-toggler-icon"></span>
         </button>
+        @endauth
 
         <!-- Centered Navbar Brand -->
         <a class="navbar-brand text-uppercase" href="{{ route('home') }}">
