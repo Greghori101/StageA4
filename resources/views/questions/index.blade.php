@@ -153,6 +153,7 @@
                         @if ($question->speaker)
                         <br><small>{{ __('interface.speaker') }}: {{ $question->speaker->full_name }}</small>
                         @endif
+                        <br>
                         <strong>{{ __('interface.answer') }}:</strong>
                         <p>{{ $question->answer ?? __('interface.no_answer') }}</p>
                         @if(auth()->check() && auth()->user()->can('create Favorite'))
